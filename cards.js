@@ -40,43 +40,24 @@ function createDeck()
     }
   }
 }
-var drawnCards = []; //I copy drawn cards in this array
 createDeck();
 function drawCard() //Testing card draws
 {
   var draw = Math.floor(Math.random()*52);//Is this truly random
-  if (draws == 52)
-  {
-    console.log("Empty deck");
-    return 0;
-  }
-  if (drawnCards[draw] == undefined)
-  { //Check the drawncard array for already drawn cards
-    if (deck[draw] == undefined)
-    {
-     console.log("Trying to draw already drawn card")
-     return 0;
-    }
-    console.log(draw);
-    console.log(deck);
-    draws++;
-	  var card = deck[draw];
-	  drawnCards[draw] = card
-    deck[draw] = undefined;
-    return card;
-  }
-  else 
-  { //If the card is already drawn we start over, need to fix the loop after we draw all cards
-	 drawCard();
-  }
-}
 
-function resetDrawnCards()//Cleans the drawncard array
-{
-  for (i=0;i<52;i++)
+  while (deck[draw] == undefined) //If the card is already drawn change the random number
   {
-    drawnCards[i] = undefined;
+    if (draws == 52) //If the total amount of draws is 52 then the deck is empty
+    {
+      console.log("Empty deck");
+      return 0;
+    }
+    draw = Math.floor(Math.random()*52);
   }
+  var card = deck[draw];
+  deck[draw] = undefined; //Set the card in the deck as undefined
+  draws++;
+  return card;
 }
 
 var players = [];
@@ -89,24 +70,28 @@ function startRound()//Start of a round, give each player two cards, big blind a
   players[1] = new Player(1, 1000);
 
   var len = players.length;
-  for (i=0;i < len;i++)
+  for (i = 0;i < len; i++)
   {
-    players[i].cards[0] = drawCard();
-    players[i].cards[1] = drawCard();
+    players[i].card1 = drawCard();
+    players[i].card2 = drawCard();
   }
+  console.log(players);
+  //drawFlop();
 }
 
 function drawFlop()//Draw the initial 3 cards
 {
   var burncard = drawCard();
-  for (i=0;i<3;i++)
+  while (board.length < 3)
   {
     var card = drawCard();
-    board[i] = card;
-    console.log(drawCard());
+    if (checkDrawnCard(card))
+    {
+      board.push(card);
+    }
   }
-  //console.log(board);
-
+  console.log(players);
+  console.log(board);
 }
 function drawTurn()//4th card
 {

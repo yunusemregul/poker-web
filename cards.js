@@ -41,6 +41,7 @@ function createDeck()
   }
 }
 createDeck();
+
 function drawCard() //Testing card draws
 {
   var draw = Math.floor(Math.random()*52);//Is this truly random
@@ -55,7 +56,7 @@ function drawCard() //Testing card draws
     draw = Math.floor(Math.random()*52);
   }
   var card = deck[draw];
-  deck[draw] = undefined; //Set the card in the deck as undefined
+  deck[draw] = undefined; //Set the card in the deck as undefined to indicate it has been drawn
   draws++;
   return card;
 }
@@ -76,30 +77,39 @@ function startRound()//Start of a round, give each player two cards, big blind a
     players[i].card2 = drawCard();
   }
   console.log(players);
-  //drawFlop();
+  drawFlop();
 }
 
 function drawFlop()//Draw the initial 3 cards
 {
   var burncard = drawCard();
-  while (board.length < 3)
+
+  for (i = 0; i < 3; i++)
   {
     var card = drawCard();
-    if (checkDrawnCard(card))
-    {
-      board.push(card);
-    }
+    board.push(card);
   }
-  console.log(players);
-  console.log(board);
+  drawTurn();
 }
 function drawTurn()//4th card
 {
+  var burncard = drawCard();
 
+  var draw = drawCard();
+
+  board.push(draw);
+
+  drawRiver();
 }
 function drawRiver()//5th card
 {
+  var burncard = drawCard();
 
+  var draw = drawCard();
+
+  board.push(draw);
+
+  console.log(board);
 }
 function revealCards()
 {

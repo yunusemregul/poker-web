@@ -13,4 +13,12 @@ app.get("/", (req, res) => {
 
 io.on("connection", (socket) => {
   console.log("a user connected");
+  io.emit("test", "you have connected");
+
+  io.on("sendback", (data) => {
+  })
 });
+
+io.on( "error", (err) => {
+	console.log(err);
+})

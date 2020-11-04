@@ -2,6 +2,14 @@ var deck = [];
 var houses = ["Heart", "Spades", "Club", "Diamond"]; //I have to check rules to see if there's a stronger house
 var cardNames = ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"]
 
+
+var draws; //Number of card drawn this game
+var draw; //Actual drawn card
+var card; //Card while drawing -- return a value cause we cant return the other since it changes
+var turn;//0-2 for turn  0 - flop | 1 - turn | 2 - river
+var players = [];
+var board = [];
+
 function Card(id, num, house, name)
 {
   this.id = id; //Probably don't need id
@@ -27,10 +35,8 @@ function Player(id, name, chips)
 
 exports.Player = Player;
 
-var draws;
 function createDeck()
 {
-  draws = 0;
   for (i=0;i < 52;i++) //Create all 52 cards with id, #, house and name
   {
     if (i < 13)
@@ -51,11 +57,10 @@ function createDeck()
     }
   }
 }
-createDeck();
 
 function drawCard() //Testing card draws
 {
-  var draw = Math.floor(Math.random()*52);//Is this truly random
+  draw = Math.floor(Math.random()*52);//Is this truly random
 
   while (deck[draw] == undefined) //If the card is already drawn change the random number
   {
@@ -66,7 +71,7 @@ function drawCard() //Testing card draws
     }
     draw = Math.floor(Math.random()*52);
   }
-  var card = deck[draw];
+  card = deck[draw];
   deck[draw] = undefined; //Set the card in the deck as undefined to indicate it has been drawn
   draws++;
   return card;
@@ -75,6 +80,7 @@ exports.drawCard = drawCard;
 
 const serv = require("./server.js")  
 
+<<<<<<< HEAD
 var players = [];
 var board = [];
 
@@ -86,53 +92,98 @@ function sendCardsToSocket(socket, cards){
 exports.sendCardsToSocket = sendCardsToSocket;
 
 function startRound(player1, player2)//Start of a round, give each player two cards, big blind and small blind removed
+=======
+function startRound()//Start of a round, give each player two cards, big blind and small blind removed
+>>>>>>> fda2a8b5027acf14a4115c5ae927d34115ad3682
 {
-  players = serv.connectedPlayers;
-  console.log(serv.connectedPlayers);
-  var len = players.length;
-  for (i = 0;i < len; i++)
+  var len;
+  /*players = serv.connectedPlayers;
+  console.log(serv.connectedPlayers);*/
+  len = players.length;
+  draws = 0;
+  turn = 0;
+
+  createDeck();
+
+  for (var i = 0;i < 2; i++)
   {
-    for (j = 0; j < 2; j++)
+    for (var j = 0; j < len; j++)
     {
       players[i].cards.push(drawCard());
     }
+  }
 
+  bet();
+}
+
+//exports.startRound = startRound;
+
+
+function bet()
+{
+  console.clear();
+  console.log(board);
+
+  //betting occuring here
+
+
+  switch(turn) {
+    case 0:
+    drawFlop();
+    break;
+
+    case 1:
+    drawTurn();
+    break;
+
+    case 2:
+    drawRiver();
+    break;
+
+    default:
+    console.log("An error as occured");
   }
 }
-exports.startRound = startRound;
 
 function drawFlop()//Draw the initial 3 cards
 {
-  var burncard = drawCard();
+  drawCard();//burn a card
 
   for (i = 0; i < 3; i++)
   {
-    var card = drawCard();
-    board.push(card);
+    board.push(drawCard());
   }
-  drawTurn();
+  turn++;
+  bet();
 }
+
+
 function drawTurn()//4th card
 {
-  var burncard = drawCard();
+  drawCard();
 
-  var draw = drawCard();
-
-  board.push(draw);
-
-  drawRiver();
+  board.push(drawCard());
+  turn++;
+  bet();
 }
+
+
 function drawRiver()//5th card
 {
-  var burncard = drawCard();
+  drawCard();
 
-  var draw = drawCard();
-
-  board.push(draw);
-
-  console.log(board);
+  board.push(drawCard());
+  turn++;
+  bet();
 }
+
+
 function revealCards()
 {
 
 }
+
+
+
+
+startRound();

@@ -8,6 +8,9 @@ $(() => {
       $("#chat-entry").val("");
     }
   });
+  $("#press").click(function (){
+    console.log("test");
+   });
 });
 
 socket.on("chat", (data) => {
@@ -17,3 +20,8 @@ socket.on("chat", (data) => {
 socket.on("error", (err) => {
   console.log(err);
 });
+
+socket.on("sendCards", (id, num, house) => {
+	cards.push(new Card(id, num, house));
+	console.log(cards);
+})

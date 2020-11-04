@@ -15,24 +15,24 @@ const card = require("./cards.js");
 
 var connectedPlayers = [];
 
-var count = 0;
+var count = 0;//Temporary so I can test startRound after 2 players connect
 
 exports.connectedPlayers = connectedPlayers;
 
 io.on("connection", (socket) => {
   var player = new card.Player(socket.id, "Player" + count, 1000);
   connectedPlayers.push(player);
-  count++;
 
   console.log(player.name + " connected");
   socket.emit("chat", "You have connected."); // emit to this player
   socket.broadcast.emit("chat", player.name + " has connected."); // emit to everyone except this player
 
-  if (count == 1) {
+  if (count == 0) {
     card.startRound();
-
+    card.sendCardsToSocket(socket, player.cards);
     console.log(connectedPlayers);
   }
+  count++;
 
   socket.on("chat", (data) => {
     var text = data;

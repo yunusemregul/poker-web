@@ -4,7 +4,7 @@ var cardNames = ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight",
 
 function Card(id, num, house, name)
 {
-  this.id = id;//Probably don't need id
+  this.id = id; //Probably don't need id
   this.num = num;
   this.house = house;
   this.name = name;
@@ -15,7 +15,14 @@ function Player(id, name, chips)
   this.id = id;
   this.name = name;
   this.chips = chips;
-  this.cards = [];//Probably don't need an array for 2 cards we could do player.card1 & card2
+  this.cards = []; //Probably don't need an array for 2 cards we could do player.card1 & card2
+
+  this.removeChips = (amount) => {
+    this.chips = this.chips - amount;
+  }
+  this.addChips = (amount) => {
+    this.chips = this.chips + amount;
+  }
 }
 
 exports.Player = Player;
@@ -70,6 +77,14 @@ const serv = require("./server.js")
 
 var players = [];
 var board = [];
+
+function sendCardsToSocket(socket, cards){
+  for (i = 0; i<2; i++){
+    socket.emit("sendCards", cards[i].id, cards[i].num, cards[i].house);   
+  }
+}
+exports.sendCardsToSocket = sendCardsToSocket;
+
 function startRound(player1, player2)//Start of a round, give each player two cards, big blind and small blind removed
 {
   players = serv.connectedPlayers;

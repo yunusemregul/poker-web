@@ -1,10 +1,9 @@
-var socket = io();
+var serv = io();
 
-socket.on("test", (data) => {
-	console.log(data);
-	socket.emit("sendback", "test");
+serv.on("test", (data) => {
+	serv.emit("sendback", "test");
 })
 
-socket.on( "error", (err) => {
+serv.on( "error", (err) => {
 	console.log(err);
 })

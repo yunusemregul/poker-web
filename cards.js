@@ -16,6 +16,9 @@ function Player(id, chips)
   this.chips = chips;
   this.cards = [];//Probably don't need an array for 2 cards we could do player.card1 & card2
 }
+
+exports.Player = Player;
+
 var draws;
 function createDeck()
 {
@@ -60,25 +63,27 @@ function drawCard() //Testing card draws
   draws++;
   return card;
 }
+exports.drawCard = drawCard;
+
+const serv = require("./server.js")  
 
 var players = [];
 var board = [];
-function startRound()//Start of a round, give each player two cards, big blind and small blind removed
+function startRound(player1, player2)//Start of a round, give each player two cards, big blind and small blind removed
 {
-  //createDeck();
-  //resetDrawnCards();
-  players[0] = new Player(0, 1000);
-  players[1] = new Player(1, 1000);
-
+  players = serv.connectedPlayers;
+  console.log(serv.connectedPlayers);
   var len = players.length;
   for (i = 0;i < len; i++)
   {
-    players[i].card1 = drawCard();
-    players[i].card2 = drawCard();
+    for (j = 0; j < 2; j++)
+    {
+      players[i].cards.push(drawCard());
+    }
+
   }
-  console.log(players);
-  drawFlop();
 }
+exports.startRound = startRound;
 
 function drawFlop()//Draw the initial 3 cards
 {

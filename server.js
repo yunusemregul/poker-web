@@ -11,7 +11,7 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/index.html");
 });
 
-const card = require("./cards.js")
+const card = require("./cards.js");
 
 var connectedPlayers = [];
 
@@ -26,32 +26,29 @@ io.on("connection", (socket) => {
   var player = new card.Player(socket.id, 1000);
 
   connectedPlayers.push(player);
-  if (count == 1)
-  {
-	card.startRound()
+  if (count == 1) {
+    card.startRound();
 
-  	console.log(connectedPlayers);  	
+    console.log(connectedPlayers);
   }
 
   count++;
 
   socket.on("disconnect", () => {
-  	for (i = 0; i < connectedPlayers.length; i++)
-  	{
-  		if (connectedPlayers.id == socket.id)
-  		{
-  			connectedPlayers.splice(i, 1);
-  			console.log("what the fuck");
-  		}
-  	}
-  		
-  })
+    for (i = 0; i < connectedPlayers.length; i++) {
+      if (connectedPlayers[i].id === socket.id) {
+        connectedPlayers.splice(i, 1);
+        console.log("what the fuck");
+        break;
+      }
+    }
+  });
 });
 
-io.on( "error", (err) => {
-	console.log(err);
-})
+io.on("error", (err) => {
+  console.log(err);
+});
 
-process.on('uncaughtException', function(err) {
+process.on("uncaughtException", function (err) {
   console.log(err);
 });

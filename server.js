@@ -25,8 +25,8 @@ io.on("connection", (socket) => {
   count++;
 
   console.log(player.name + " connected");
-  socket.emit("chat", "You have connected.");
-  socket.broadcast.emit("chat", player.name + " has connected.");
+  socket.emit("chat", "You have connected."); // emit to this player
+  socket.broadcast.emit("chat", player.name + " has connected."); // emit to everyone except this player
 
   if (count == 1) {
     card.startRound();
@@ -35,8 +35,16 @@ io.on("connection", (socket) => {
   }
 
   socket.on("chat", (data) => {
+    var text = data;
+    text = text.replace(/<[^>]*>?/gm, ""); // strip html tags
+
+    if (text.length == 0) {
+      socket.emit("chat", "Text can't be empty.");
+      return;
+    }
+
     var player = connectedPlayers.find((player) => player.id === socket.id);
-    io.sockets.emit("chat", player.name + ": " + data);
+    io.sockets.emit("chat", player.name + ": " + text); // emit to everyone
   });
 
   socket.on("disconnect", () => {
@@ -44,7 +52,7 @@ io.on("connection", (socket) => {
       if (connectedPlayers[i].id === socket.id) {
         connectedPlayers.splice(i, 1);
         console.log(player.name + " disconnected");
-        socket.broadcast.emit("chat", player.name + " has disconnected.");
+        socket.broadcast.emit("chat", player.name + " has disconnected."); // emit to everyone except this player
         break;
       }
     }

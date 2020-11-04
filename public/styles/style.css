@@ -1,5 +1,5 @@
 .chatbox {
-  background-color: red;
+  background-color: #333;
   width: 300px;
   height: 300px;
   display: flex;
@@ -15,8 +15,18 @@
 
 .chatbox-body {
   flex: 1 1 auto;
-  background-color: black;
+  background-color: #111;
   overflow-y: scroll;
   overflow-wrap: break-word;
+  padding: 6px;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+#chat-entry {
+  background-color: #000;
+  outline: none;
+  border: 0px solid;
+  height: 25px;
   padding: 6px;
 }

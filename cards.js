@@ -10,9 +10,10 @@ function Card(id, num, house, name)
   this.name = name;
 }
 
-function Player(id, chips)
+function Player(id, name, chips)
 {
   this.id = id;
+  this.name = name;
   this.chips = chips;
   this.cards = [];//Probably don't need an array for 2 cards we could do player.card1 & card2
 }

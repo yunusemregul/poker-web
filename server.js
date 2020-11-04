@@ -20,25 +20,31 @@ var count = 0;
 exports.connectedPlayers = connectedPlayers;
 
 io.on("connection", (socket) => {
-  console.log("a user connected");
-  socket.emit("test", "you have connected");
-
-  var player = new card.Player(socket.id, 1000);
-
+  var player = new card.Player(socket.id, "Player" + count, 1000);
   connectedPlayers.push(player);
+  count++;
+
+  console.log(player.name + " connected");
+  socket.emit("chat", "You have connected.");
+  socket.broadcast.emit("chat", player.name + " has connected.");
+
   if (count == 1) {
     card.startRound();
 
     console.log(connectedPlayers);
   }
 
-  count++;
+  socket.on("chat", (data) => {
+    var player = connectedPlayers.find((player) => player.id === socket.id);
+    io.sockets.emit("chat", player.name + ": " + data);
+  });
 
   socket.on("disconnect", () => {
     for (i = 0; i < connectedPlayers.length; i++) {
       if (connectedPlayers[i].id === socket.id) {
         connectedPlayers.splice(i, 1);
-        console.log("what the fuck");
+        console.log(player.name + " disconnected");
+        socket.broadcast.emit("chat", player.name + " has disconnected.");
         break;
       }
     }

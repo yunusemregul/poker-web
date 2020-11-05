@@ -5,6 +5,7 @@ var cardNames = ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight",
 var cards = [];
 var board = [];
 var pot = 0;
+var chips = 0;
 
 function Card(id, num, house, name)
 {

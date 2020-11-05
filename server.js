@@ -18,23 +18,15 @@ const table = require("./table.js");
 
 var connectedPlayers = [];
 
-var count = 0; //Temporary so I can test startRound after 2 players connect
-
 exports.connectedPlayers = connectedPlayers;
 
 io.on("connection", (socket) => {
-  var player = new card.Player(socket.id, "Player" + count, 1000);
+  var player = new card.Player(socket.id, "Player ", 1000);
   connectedPlayers.push(player);
 
   console.log(player.name + " connected");
   socket.emit("chat", "You have connected."); // emit to this player
   socket.broadcast.emit("chat", player.name + " has connected."); // emit to everyone except this player
-
-  if (count == 0) {
-    card.startRound();
-    card.sendCardsToSocket(socket, player.cards);
-  }
-  count++;
 
   socket.on("chat", (data) => {
     var text = data;
@@ -60,13 +52,17 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("send_bet", (amount) => {
+  socket.on("send_bet", (amount) => { 
     var player = connectedPlayers.find((player) => player.id === socket.id);
 
-    console.log(amount);
     table.takeBet(player, amount);
-
+    player.updateChips();
     console.log(table.pot);
+  })
+
+  socket.on("round_start", () => {
+    card.startRound();
+    player.updateChips();
   })
 });
 
@@ -77,3 +73,4 @@ io.on("error", (err) => {
 process.on("uncaughtException", function (err) {
   console.log(err);
 });
+

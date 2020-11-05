@@ -11,6 +11,8 @@ var board = [];
 
 var table = require("./table.js");
 
+const serv = require("./server.js")  
+
 function Card(id, num, house, name)
 {
   this.id = id; //Probably don't need id
@@ -36,6 +38,16 @@ function Player(id, name, chips)
   }
   this.addChips = (amount) => {
     this.chips = this.chips + amount;
+  }
+  this.updateChips = () => {
+    serv.io.to(this.id).emit("update_chips", this.chips);
+  }
+  this.sendCards = () => {
+    for (i = 0; i < 2; i++)
+    {
+      serv.io.to(this.id).emit("sendCards", this.cards[i].id, this.cards[i].num, this.cards[i].house);      
+    }
+
   }
 }
 
@@ -84,14 +96,11 @@ function drawCard() //Testing card draws
 }
 exports.drawCard = drawCard;
 
-const serv = require("./server.js")  
-
-function sendCardsToSocket(socket, cards){ //Send the two cards to the player
+function sendCardsToPlayers(cards){ //Send the two cards to the player
   for (i = 0; i<2; i++){
     socket.emit("sendCards", cards[i].id, cards[i].num, cards[i].house);   
   }
 }
-exports.sendCardsToSocket = sendCardsToSocket;
 
 function sendFlop(){ //Send the flop to all players
   for (i = 0; i<3; i++){
@@ -104,7 +113,6 @@ function startRound()//Start of a round, give each player two cards, big blind a
 {
   var len;
   players = serv.connectedPlayers;
-  console.log(serv.connectedPlayers);
   len = players.length;
   draws = 0;
   turn = 0;
@@ -117,6 +125,7 @@ function startRound()//Start of a round, give each player two cards, big blind a
     {
       players[i].cards.push(drawCard());
     }
+    players[i].sendCards();
   }
 
   //bet();

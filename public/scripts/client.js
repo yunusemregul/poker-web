@@ -9,42 +9,10 @@ $(() => {
     }
   });
   $("#press").click(function (){
-  	sendBet(parseInt($("#chat-entry").val()));
+  	sendBet($("#chat-entry").val());
+   });
+   $("#start").click(function (){
+  	socket.emit("round_start");
    });
 });
 
-socket.on("chat", (data) => {
-  $("#chat").append(data + "<br/>");
-});
-
-socket.on("error", (err) => {
-  console.log(err);
-});
-
-socket.on("sendCards", (id, num, house) => {
-	cards.push(new Card(id, num, house));
-	$("#chat").append("Your card: " + cardNames[num] + " of " + houses[house]+"<br/>");
-})
-
-socket.on("sendFlop", (id, num, house) => {
-	board.push(new Card(id, num, house));
-	$("#chat").append("Flop: " + cardNames[num-1] + " of " + houses[house]+"<br/>");
-})
-
-socket.on("update_pot", (num) => {
-	pot = num;
-	console.log("pot is now: "+pot);
-})
-
-function sendBet(amount){
-	socket.emit("send_bet", amount);
-  cards.push(new Card(id, num, house));
-  $("#chat").append("Your card: " + cardNames[num] + " of " + houses[house] + "<br/>");
-  console.log(cards);
-}
-
-socket.on("sendFlop", (id, num, house) => {
-  board.push(new Card(id, num, house));
-  console.log(board);
-  $("#chat").append("Flop: " + cardNames[num] + " of " + houses[house] + "<br/>");
-});

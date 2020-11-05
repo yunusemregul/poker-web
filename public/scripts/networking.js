@@ -7,24 +7,25 @@ socket.on("error", (err) => {
 });
 
 socket.on("sendCards", (id, num, house) => {
-	cards.push(new Card(id, num, house));
-	$("#chat").append("Your card: " + cardNames[num] + " of " + houses[house]+"<br/>");
-})
+  var index = cards.push(new Card(id, num, house));
+  updateFace(index == 1 ? face1 : face2, num, house);
+  $("#chat").append("Your card: " + cardNames[num] + " of " + houses[house] + "<br/>");
+});
 
 socket.on("sendFlop", (id, num, house) => {
-	board.push(new Card(id, num, house));
-	$("#chat").append("Flop: " + cardNames[num-1] + " of " + houses[house]+"<br/>");
-})
+  board.push(new Card(id, num, house));
+  $("#chat").append("Flop: " + cardNames[num - 1] + " of " + houses[house] + "<br/>");
+});
 
 socket.on("update_pot", (num) => {
-	pot = num;
-	$("#chat").append("Pot is now " + pot + "<br/>");
-})
+  pot = num;
+  $("#chat").append("Pot is now " + pot + "<br/>");
+});
 
 socket.on("update_chips", (amount) => {
-	chips = amount;
-	$("#chat").append("You have: " + amount + " chips" + "<br/>");
-})
+  chips = amount;
+  $("#chat").append("You have: " + amount + " chips" + "<br/>");
+});
 
 socket.on("sendFlop", (id, num, house) => {
   board.push(new Card(id, num, house));
@@ -41,5 +42,3 @@ function sendBet(amount){
 	} else {
 		socket.emit("send_bet", parseInt(amount));		
 	}
-}
-

@@ -32,7 +32,6 @@ io.on("connection", (socket) => {
   if (count == 0) {
     card.startRound();
     card.sendCardsToSocket(socket, player.cards);
-    console.log(connectedPlayers);
   }
   count++;
 
@@ -61,7 +60,6 @@ io.on("connection", (socket) => {
   });
   socket.on("clickedButton", () => {
   	card.drawFlop();
-  	card.sendFlop(socket);
   });
 });
 

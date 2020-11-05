@@ -23,10 +23,12 @@ socket.on("error", (err) => {
 
 socket.on("sendCards", (id, num, house) => {
 	cards.push(new Card(id, num, house));
+	$("#chat").append("Your card: " + cardNames[num] + " of " + houses[house]+"<br/>");
 	console.log(cards);
 })
 
 socket.on("sendFlop", (id, num, house) => {
 	board.push(new Card(id, num, house));
 	console.log(board);
+	$("#chat").append("Flop: " + cardNames[num] + " of " + houses[house]+"<br/>");
 })

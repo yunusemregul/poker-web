@@ -1,7 +1,6 @@
 var deck = [];
 var houses = ["Heart", "Spades", "Club", "Diamond"]; //I have to check rules to see if there's a stronger house
-var cardNames = ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"]
-
+var cardNames = ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"];
 
 var draws; //Number of card drawn this game
 var draw; //Actual drawn card
@@ -39,19 +38,20 @@ function createDeck()
 {
   for (i=0;i < 52;i++) //Create all 52 cards with id, #, house and name
   {
-    if (i < 13)
+    if (i < 13)//0-12
     {
       deck[i] = new Card(i, i+1, 0, cardNames[i]);
+      console.log(i);
     }
-    if (i > 12 && i < 26)
+    if (i > 12 && i < 26)//13-25
     {
       deck[i] = new Card(i, i-12, 1, cardNames[i-13]);
     }
-    if (i > 25 && i < 39)
+    if (i > 25 && i < 39)//26-37
     {
       deck[i] = new Card(i, i-25, 2, cardNames[i-26]);
     }
-    if (i > 38)
+    if (i > 38)//39-51
     {
       deck[i] = new Card(i, i-38, 3, cardNames[i-39]);
     }
@@ -80,20 +80,19 @@ exports.drawCard = drawCard;
 
 const serv = require("./server.js")  
 
-function sendCardsToSocket(socket, cards){
+function sendCardsToSocket(socket, cards){ //Send the two cards to the player
   for (i = 0; i<2; i++){
     socket.emit("sendCards", cards[i].id, cards[i].num, cards[i].house);   
   }
 }
+exports.sendCardsToSocket = sendCardsToSocket;
 
-function sendFlop(socket){
+function sendFlop(){ //Send the flop to all players
   for (i = 0; i<3; i++){
-    socket.emit("sendFlop", board[i].id, board[i].num, board[i].house);
+    serv.io.sockets.emit("sendFlop", board[i].id, board[i].num, board[i].house);
   }
 }
-
 exports.sendFlop = sendFlop;
-exports.sendCardsToSocket = sendCardsToSocket;
 
 function startRound()//Start of a round, give each player two cards, big blind and small blind removed
 {
@@ -104,7 +103,14 @@ function startRound()//Start of a round, give each player two cards, big blind a
   draws = 0;
   turn = 0;
 
+
+
   createDeck();
+
+for (i=0;i<52;i++){
+  console.log(deck[i].name, houses[deck[i].house])
+}
+
 
   for (var i = 0;i < len; i++)
   {
@@ -154,6 +160,7 @@ function drawFlop()//Draw the initial 3 cards
   {
     board.push(drawCard());
   }
+  sendFlop();
   turn++;
   //bet();
 }

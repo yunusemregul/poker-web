@@ -1,13 +1,12 @@
 //Create a Pixi Application
 let app = new PIXI.Application({ width: 256, height: 256 });
+app.renderer.backgroundColor = 0x2B373A;
 app.renderer.view.style.position = "absolute";
 app.renderer.view.style.display = "block";
 app.renderer.autoResize = true;
 app.renderer.resize(window.innerWidth, window.innerHeight);
 
 $("body").append(app.view);
-
-var stage = new PIXI.Container();
 
 PIXI.loader.add("images/table.jpg").load(setup);
 

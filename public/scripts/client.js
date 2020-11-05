@@ -38,4 +38,13 @@ socket.on("update_pot", (num) => {
 
 function sendBet(amount){
 	socket.emit("send_bet", amount);
+  cards.push(new Card(id, num, house));
+  $("#chat").append("Your card: " + cardNames[num] + " of " + houses[house] + "<br/>");
+  console.log(cards);
 }
+
+socket.on("sendFlop", (id, num, house) => {
+  board.push(new Card(id, num, house));
+  console.log(board);
+  $("#chat").append("Flop: " + cardNames[num] + " of " + houses[house] + "<br/>");
+});

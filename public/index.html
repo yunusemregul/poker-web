@@ -7,18 +7,20 @@
       crossorigin="anonymous"
     ></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="lib/pixi.js"></script>
     <script src="scripts/cards.js"></script>
     <script src="scripts/client.js"></script>
     <link rel="stylesheet" href="styles/style.css" />
   </head>
   <body>
-    <div>
+    <div style="position: absolute; z-index: 999; margin: 16; bottom: 0">
       <div class="chatbox">
         <div class="chatbox-title">Chat</div>
         <div id="chat" class="chatbox-body"></div>
         <input id="chat-entry" type="text" placeholder="Your messsage..." />
       </div>
+      <button id="press">Press</button>
     </div>
-    <button id="press">Press</button>
   </body>
+  <script src="scripts/draw.js"></script>
 </html>

@@ -9,7 +9,7 @@ $(() => {
     }
   });
   $("#press").click(function (){
-    console.log("test");
+  	socket.emit("clickedButton");
    });
 });
 
@@ -24,4 +24,9 @@ socket.on("error", (err) => {
 socket.on("sendCards", (id, num, house) => {
 	cards.push(new Card(id, num, house));
 	console.log(cards);
+})
+
+socket.on("sendFlop", (id, num, house) => {
+	board.push(new Card(id, num, house));
+	console.log(board);
 })

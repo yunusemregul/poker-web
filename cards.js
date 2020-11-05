@@ -80,43 +80,44 @@ exports.drawCard = drawCard;
 
 const serv = require("./server.js")  
 
-<<<<<<< HEAD
-var players = [];
-var board = [];
-
 function sendCardsToSocket(socket, cards){
   for (i = 0; i<2; i++){
     socket.emit("sendCards", cards[i].id, cards[i].num, cards[i].house);   
   }
 }
+
+function sendFlop(socket){
+  for (i = 0; i<3; i++){
+    socket.emit("sendFlop", board[i].id, board[i].num, board[i].house);
+  }
+}
+
+exports.sendFlop = sendFlop;
 exports.sendCardsToSocket = sendCardsToSocket;
 
-function startRound(player1, player2)//Start of a round, give each player two cards, big blind and small blind removed
-=======
 function startRound()//Start of a round, give each player two cards, big blind and small blind removed
->>>>>>> fda2a8b5027acf14a4115c5ae927d34115ad3682
 {
   var len;
-  /*players = serv.connectedPlayers;
-  console.log(serv.connectedPlayers);*/
+  players = serv.connectedPlayers;
+  console.log(serv.connectedPlayers);
   len = players.length;
   draws = 0;
   turn = 0;
 
   createDeck();
 
-  for (var i = 0;i < 2; i++)
+  for (var i = 0;i < len; i++)
   {
-    for (var j = 0; j < len; j++)
+    for (var j = 0; j < 2; j++)
     {
       players[i].cards.push(drawCard());
     }
   }
 
-  bet();
+  //bet();
 }
 
-//exports.startRound = startRound;
+exports.startRound = startRound;
 
 
 function bet()
@@ -154,9 +155,10 @@ function drawFlop()//Draw the initial 3 cards
     board.push(drawCard());
   }
   turn++;
-  bet();
+  //bet();
 }
 
+exports.drawFlop = drawFlop;
 
 function drawTurn()//4th card
 {
@@ -164,7 +166,7 @@ function drawTurn()//4th card
 
   board.push(drawCard());
   turn++;
-  bet();
+  //bet();
 }
 
 
@@ -174,7 +176,7 @@ function drawRiver()//5th card
 
   board.push(drawCard());
   turn++;
-  bet();
+  //bet();
 }
 
 
@@ -182,8 +184,3 @@ function revealCards()
 {
 
 }
-
-
-
-
-startRound();

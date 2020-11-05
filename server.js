@@ -5,6 +5,8 @@ var app = express();
 var server = app.listen(port);
 var io = require("socket.io").listen(server);
 
+exports.io = io;
+
 app.use(express.static(__dirname + "/public"));
 
 app.get("/", (req, res) => {
@@ -56,6 +58,10 @@ io.on("connection", (socket) => {
         break;
       }
     }
+  });
+  socket.on("clickedButton", () => {
+  	card.drawFlop();
+  	card.sendFlop(socket);
   });
 });
 

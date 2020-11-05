@@ -20,14 +20,16 @@ var connectedPlayers = [];
 
 exports.connectedPlayers = connectedPlayers;
 
+var count = 0;
+
 io.on("connection", (socket) => {
-  var player = new card.Player(socket.id, "Player ", 1000, socket);
+  var player = new card.Player(socket.id, "Player "+ " " + count, 1000, socket);
   connectedPlayers.push(player);
 
   console.log(player.name + " connected");
   socket.emit("chat", "You have connected."); // emit to this player
   socket.broadcast.emit("chat", player.name + " has connected."); // emit to everyone except this player
-
+  count++;
   socket.on("chat", (data) => {
     var text = data;
     text = text.replace(/<[^>]*>?/gm, ""); // strip html tags
@@ -57,6 +59,7 @@ io.on("connection", (socket) => {
     if (!table.checkPlayerTurnToBet(player)){
       socket.emit("chat", "Not your turn");
     } else {
+      socket.broadcast.emit("chat", player.name + " bet " + amount + " chips");
       table.takeBet(player, amount);
       table.nextTurnToBet();
       player.updateChips();   
@@ -78,8 +81,9 @@ io.on("connection", (socket) => {
     card.sendRiver();
   })
   socket.on("round_start", () => {
+    var player = connectedPlayers.find((player) => player.id === socket.id);
     card.startRound();
-    table.resetTurnsToBet();
+    table.nextTurnToBet();
     player.updateChips();
   })
 

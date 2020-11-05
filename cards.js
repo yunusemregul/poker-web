@@ -49,6 +49,9 @@ function Player(id, name, chips, socket)
       serv.io.to(this.id).emit("cards_send", this.cards[i].id, this.cards[i].num, this.cards[i].house);      
     }
   }
+  this.socket.on("test2", () => {
+    console.log("test");
+  })
 }
 
 exports.Player = Player;
@@ -97,12 +100,6 @@ function drawCard() //Testing card draws
 }
 exports.drawCard = drawCard;
 
-function sendCardsToPlayers(cards){ //Send the two cards to the player
-  for (i = 0; i<2; i++){
-    socket.emit("sendCards", cards[i].id, cards[i].num, cards[i].house);   
-  }
-}
-
 function startRound()//Start of a round, give each player two cards, big blind and small blind removed
 {
   var len;
@@ -113,6 +110,8 @@ function startRound()//Start of a round, give each player two cards, big blind a
   board = [];
 
   createDeck();
+
+  table.phases = 0;
 
   for (var i = 0;i < len; i++)
   {

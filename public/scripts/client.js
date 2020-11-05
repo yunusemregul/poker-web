@@ -4,6 +4,7 @@ $(() => {
   $("#chat-entry").keypress(function (event) {
     var keycode = event.keyCode ? event.keyCode : event.which;
     if (keycode == "13") {
+    	socket.emit("test2");
       socket.emit("chat", $("#chat-entry").val());
       $("#chat-entry").val("");
     }
@@ -24,6 +25,9 @@ $(() => {
   	socket.emit("river_send");
    });
    $("#reset").click(function (){
+  	socket.emit("reset");
+   });
+   $("#fold").click(function (){
   	socket.emit("reset");
    });
 });

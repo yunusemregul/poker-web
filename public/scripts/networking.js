@@ -19,10 +19,9 @@ socket.on("cards_send", (id, num, house) => { //Sorry I changed the way you crea
 });
 
 socket.on("flop_send", (id, num, house) => { //Receive the flop from server
-  board.push(new Card(id, num, house));
+  var index = board.push(new Card(id, num, house));
 
-  var len = board.length
-  if (len == 3){ //When the board array reaches 3 cards we draw the cards
+  if (index == 3){ //When the board array reaches 3 cards we draw the cards
     drawFlop();
     for (i = 0; i < 3; i++){
       updateFace(boardFaces[i], board[i].id, board[i].num, board[i].house);
@@ -55,7 +54,7 @@ socket.on("reset", (num) => { //Reset command from server, delete all the card f
     }
   }
 
-  for (i = 0; i < 2; i++){
+  for (i = 0; i < 2; i++){ //Also removes cards
     var id = cards[i].id;
     for (j = 0; j < children.length; j++){
       if (children[j].id == cards[i].id){
@@ -86,7 +85,9 @@ socket.on("sendFlop", (id, num, house) => {
 
 socket.on("your_turn", () => {
 	$("#chat").append("Your turn" + "<br/>");	
-})
+});
+
+
 function sendBet(amount){
 	if (amount <= 0) {
 		$("#chat").append("Can't bet lower than 1." + "<br/>");	

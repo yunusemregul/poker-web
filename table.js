@@ -1,7 +1,18 @@
 var pot = 0;
 exports.pot = pot;
 
+/*
+table.phases
+0 - Start of the game betting
+1 - Flop
+2 - Turn
+3 - River*/
+
+var phases = 0;
+exports.phases = phases;
+
 const serv = require("./server.js");
+const cards = require("./cards.js");
 
 function addPotMoney(amount){
 	pot += amount;
@@ -9,6 +20,25 @@ function addPotMoney(amount){
 	serv.io.sockets.emit("update_pot", pot);
 	exports.pot = pot;
 }
+
+function nextPhase(){
+	switch (phases){
+		case 0:
+			cards.drawFlop();
+			cards.sendFlop();
+		break;
+		case 1:
+			cards.drawTurn();
+			cards.sendTurn();
+		break;
+		case 2:
+			cards.drawRiver();
+			cards.sendRiver();
+		break;
+	}
+
+}
+exports.nextPhase = nextPhase;
 
 function takeBet(player, amount){
 	if (player.removeChips(amount)){
@@ -38,6 +68,39 @@ function checkPlayerTurnToBet(player){
 }
 exports.checkPlayerTurnToBet = checkPlayerTurnToBet;
 
+function skipFoldedPlayers(){
+	var players = serv.connectedPlayers;
+	var len = players.length;
+
+	var index = players.indexOf(currentPlayerToBet);
+
+	var count = 0;
+
+	var realindex = 0;
+
+	for (i = index; i < len;i ++){
+
+		if (currentPlayerToBet[i + 1] == undefined){
+			realindex = i - len - 1;
+
+			if (players[realindex].folded){
+				count++
+			} else {
+				return;
+			}
+		} else {
+			if (players[index].folded){
+				count++
+			} else 
+			{
+				return;
+			}
+		}
+	}
+
+	return count;
+}
+
 function nextTurnToBet(){
 	var players = serv.connectedPlayers;
 	var len = players.length;
@@ -45,13 +108,10 @@ function nextTurnToBet(){
 	var index = players.indexOf(currentPlayerToBet);
 
 	if (players[index + 1] == undefined){
-		var newPlayer = players[0];
 		currentPlayerToBet = players[0];
-		serv.io.to(newPlayer.id).emit("your_turn to bet");
+	} else {
+		currentPlayerToBet = players[index + 1];
 	}
-	else{
-		console.log(players[index+1]);
-		currentPlayerToBet = players[index+1];		
-	}
+	console.log(currentPlayerToBet.name);
 }
 exports.nextTurnToBet = nextTurnToBet;

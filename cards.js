@@ -9,6 +9,8 @@ var turn;//0-2 for turn  0 - flop | 1 - turn | 2 - river
 var players = [];
 var board = [];
 
+var table = require("./table.js");
+
 function Card(id, num, house, name)
 {
   this.id = id; //Probably don't need id
@@ -25,7 +27,12 @@ function Player(id, name, chips)
   this.cards = []; //Probably don't need an array for 2 cards we could do player.card1 & card2
 
   this.removeChips = (amount) => {
+    if (this.chips - amount < 0){
+      console.log("Not enough chips");
+      return false;
+    }
     this.chips = this.chips - amount;
+    return true;
   }
   this.addChips = (amount) => {
     this.chips = this.chips + amount;
@@ -41,7 +48,6 @@ function createDeck()
     if (i < 13)//0-12
     {
       deck[i] = new Card(i, i+1, 0, cardNames[i]);
-      console.log(i);
     }
     if (i > 12 && i < 26)//13-25
     {
@@ -103,14 +109,7 @@ function startRound()//Start of a round, give each player two cards, big blind a
   draws = 0;
   turn = 0;
 
-
-
   createDeck();
-
-for (i=0;i<52;i++){
-  console.log(deck[i].name, houses[deck[i].house])
-}
-
 
   for (var i = 0;i < len; i++)
   {

@@ -9,7 +9,7 @@ $(() => {
     }
   });
   $("#press").click(function (){
-  	socket.emit("clickedButton");
+  	sendBet(parseInt($("#chat-entry").val()));
    });
 });
 
@@ -24,11 +24,18 @@ socket.on("error", (err) => {
 socket.on("sendCards", (id, num, house) => {
 	cards.push(new Card(id, num, house));
 	$("#chat").append("Your card: " + cardNames[num] + " of " + houses[house]+"<br/>");
-	console.log(cards);
 })
 
 socket.on("sendFlop", (id, num, house) => {
 	board.push(new Card(id, num, house));
-	console.log(board);
-	$("#chat").append("Flop: " + cardNames[num] + " of " + houses[house]+"<br/>");
+	$("#chat").append("Flop: " + cardNames[num-1] + " of " + houses[house]+"<br/>");
 })
+
+socket.on("update_pot", (num) => {
+	pot = num;
+	console.log("pot is now: "+pot);
+})
+
+function sendBet(amount){
+	socket.emit("send_bet", amount);
+}

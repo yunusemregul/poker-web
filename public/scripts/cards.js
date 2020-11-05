@@ -4,6 +4,8 @@ var cardNames = ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight",
 
 var cards = [];
 var board = [];
+var pot = 0;
+
 function Card(id, num, house, name)
 {
   this.id = id;
@@ -11,3 +13,4 @@ function Card(id, num, house, name)
   this.house = house;
   this.name = name;
 }
+

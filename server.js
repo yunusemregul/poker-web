@@ -14,6 +14,7 @@ app.get("/", (req, res) => {
 });
 
 const card = require("./cards.js");
+const table = require("./table.js");
 
 var connectedPlayers = [];
 
@@ -58,9 +59,15 @@ io.on("connection", (socket) => {
       }
     }
   });
-  socket.on("clickedButton", () => {
-  	card.drawFlop();
-  });
+
+  socket.on("send_bet", (amount) => {
+    var player = connectedPlayers.find((player) => player.id === socket.id);
+
+    console.log(amount);
+    table.takeBet(player, amount);
+
+    console.log(table.pot);
+  })
 });
 
 io.on("error", (err) => {

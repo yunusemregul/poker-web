@@ -1,5 +1,5 @@
 var deck = [];
-var houses = ["Heart", "Spades", "Club", "Diamond"]; //I have to check rules to see if there's a stronger house
+var houses = ["Diamond", "Club", "Heart", "Spades"]; //I have to check rules to see if there's a stronger house
 var cardNames = ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"];
 
 var draws; //Number of card drawn this game

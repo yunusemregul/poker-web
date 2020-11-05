@@ -42,3 +42,4 @@ function sendBet(amount){
 	} else {
 		socket.emit("send_bet", parseInt(amount));		
 	}
+}

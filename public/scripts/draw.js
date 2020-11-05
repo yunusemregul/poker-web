@@ -37,22 +37,24 @@ function createCardFace(x, y) {
 
   face.position.set(x, y);
 
+  face.scale.x = face.scale.y = 0.5;
+
   return face;
 }
 
-var face1;
-var face2;
-
-function updateFace(face, num, suit)
+function updateFace(face, id, num, suit)
 {
   num = num + 1;
   suit = suit + 1;
-  console.log(num, suit);
+  //console.log(num, suit);
   var tex = PIXI.loader.resources["cards"].textures;
 
   face.children[1].texture = num > 0 ? tex[suit % 2 + "_" + num + ".png"]: PIXI.Texture.EMPTY;
   face.children[2].texture = suit !== 0 ? tex[suit + "_big.png"] : PIXI.Texture.EMPTY;
   face.children[3].texture = suit !== 0 ? tex[suit + "_small.png"] : PIXI.Texture.EMPTY;
+
+  face.id = id; //This is used to find the children in app.stage.children
+
 }
 
 function setup() {
@@ -61,10 +63,35 @@ function setup() {
   background.position.set(window.innerWidth / 2, window.innerHeight / 2);
   background.scale.set((window.innerHeight / 1240) * 1.5);
 
-  face1 = createCardFace(500, 500);
-  face2 = createCardFace(800, 500);
-
   app.stage.addChild(background);
-  app.stage.addChild(face1);
-  app.stage.addChild(face2);
+}
+
+var cardFaces = []; //Store the play cards faces in this array
+
+function drawCards(){
+  for (i = 0; i < 2; i++){
+    cardFaces[i] = createCardFace(850 + i * 150, 600)
+    app.stage.addChild(cardFaces[i]);
+    console.log(cardFaces);
+  }
+}
+
+var boardFaces = []; //Store the board faces in this array
+
+function drawFlop(){ //Create the 3 flop cards faces
+  for (i = 0; i < 3; i++){
+    boardFaces[i] = createCardFace(600 + i * 150, 300);
+    app.stage.addChild(boardFaces[i]);
+  }
+}
+
+function drawTurn(){ //Create the turn card face
+  boardFaces[3] = createCardFace(1050, 300);
+  app.stage.addChild(boardFaces[3]);
+}
+
+function drawRiver(){ //Create the river card face
+  boardFaces[4] = createCardFace(1200, 300);
+
+  app.stage.addChild(boardFaces[4]);
 }

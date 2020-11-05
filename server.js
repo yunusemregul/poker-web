@@ -21,7 +21,7 @@ var connectedPlayers = [];
 exports.connectedPlayers = connectedPlayers;
 
 io.on("connection", (socket) => {
-  var player = new card.Player(socket.id, "Player ", 1000);
+  var player = new card.Player(socket.id, "Player ", 1000, socket);
   connectedPlayers.push(player);
 
   console.log(player.name + " connected");
@@ -54,21 +54,39 @@ io.on("connection", (socket) => {
 
   socket.on("send_bet", (amount) => { 
     var player = connectedPlayers.find((player) => player.id === socket.id);
-    if (!table.checkPlayerTurn(player)){
+    if (!table.checkPlayerTurnToBet(player)){
       socket.emit("chat", "Not your turn");
     } else {
       table.takeBet(player, amount);
-      table.nextTurn();
+      table.nextTurnToBet();
       player.updateChips();   
     }
-
   })
 
+  socket.on("flop_send", () => {
+    card.drawFlop();
+    card.sendFlop();
+  })
+
+  socket.on("turn_send", () => {
+    card.drawTurn();
+    card.sendTurn();
+  })
+
+  socket.on("river_send", () => {
+    card.drawFlop();
+    card.sendRiver();
+  })
   socket.on("round_start", () => {
     card.startRound();
-    table.resetTurns();
+    table.resetTurnsToBet();
     player.updateChips();
   })
+
+  socket.on("reset", () => {
+    io.sockets.emit("reset");
+  })
+
 });
 
 io.on("error", (err) => {

@@ -19,39 +19,39 @@ function takeBet(player, amount){
 }
 exports.takeBet = takeBet;
 
-var currentPlayer;
-exports.currentPlayer = currentPlayer;
+var currentPlayerToBet;
+exports.currentPlayerToBet = currentPlayerToBet;
 
-function resetTurns(){
+function resetTurnsToBet(){
 	var players = serv.connectedPlayers;
-	currentPlayer = players[0]
+	currentPlayerToBet = players[0]
 }
 
-exports.resetTurns = resetTurns;
+exports.resetTurnsToBet = resetTurnsToBet;
 
-function checkPlayerTurn(player){
-	if (player == currentPlayer){
+function checkPlayerTurnToBet(player){
+	if (player == currentPlayerToBet){
 		return true;
 	} else {
 		return false;
 	}
 }
-exports.checkPlayerTurn = checkPlayerTurn;
+exports.checkPlayerTurnToBet = checkPlayerTurnToBet;
 
-function nextTurn(){
+function nextTurnToBet(){
 	var players = serv.connectedPlayers;
 	var len = players.length;
 
-	var index = players.indexOf(currentPlayer);
+	var index = players.indexOf(currentPlayerToBet);
 
 	if (players[index + 1] == undefined){
 		var newPlayer = players[0];
-		currentPlayer = players[0];
+		currentPlayerToBet = players[0];
 		serv.io.to(newPlayer.id).emit("your_turn to bet");
 	}
 	else{
 		console.log(players[index+1]);
-		currentPlayer = players[index+1];		
+		currentPlayerToBet = players[index+1];		
 	}
 }
-exports.nextTurn = nextTurn;
+exports.nextTurnToBet = nextTurnToBet;

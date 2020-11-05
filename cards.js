@@ -21,12 +21,13 @@ function Card(id, num, house, name)
   this.name = name;
 }
 
-function Player(id, name, chips)
+function Player(id, name, chips, socket)
 {
   this.id = id;
   this.name = name;
   this.chips = chips;
   this.cards = []; //Probably don't need an array for 2 cards we could do player.card1 & card2
+  this.socket = socket;
 
   this.removeChips = (amount) => {
     if (this.chips - amount < 0){
@@ -45,9 +46,8 @@ function Player(id, name, chips)
   this.sendCards = () => {
     for (i = 0; i < 2; i++)
     {
-      serv.io.to(this.id).emit("sendCards", this.cards[i].id, this.cards[i].num, this.cards[i].house);      
+      serv.io.to(this.id).emit("cards_send", this.cards[i].id, this.cards[i].num, this.cards[i].house);      
     }
-
   }
 }
 
@@ -55,6 +55,7 @@ exports.Player = Player;
 
 function createDeck()
 {
+  deck = [];
   for (i=0;i < 52;i++) //Create all 52 cards with id, #, house and name
   {
     if (i < 13)//0-12
@@ -102,13 +103,6 @@ function sendCardsToPlayers(cards){ //Send the two cards to the player
   }
 }
 
-function sendFlop(){ //Send the flop to all players
-  for (i = 0; i<3; i++){
-    serv.io.sockets.emit("sendFlop", board[i].id, board[i].num, board[i].house);
-  }
-}
-exports.sendFlop = sendFlop;
-
 function startRound()//Start of a round, give each player two cards, big blind and small blind removed
 {
   var len;
@@ -116,11 +110,13 @@ function startRound()//Start of a round, give each player two cards, big blind a
   len = players.length;
   draws = 0;
   turn = 0;
-  
+  board = [];
+
   createDeck();
 
   for (var i = 0;i < len; i++)
   {
+    players[i].cards = [];//Reset cards after each round start
     for (var j = 0; j < 2; j++)
     {
       players[i].cards.push(drawCard());
@@ -132,7 +128,6 @@ function startRound()//Start of a round, give each player two cards, big blind a
 }
 
 exports.startRound = startRound;
-
 
 function bet()
 {
@@ -168,12 +163,17 @@ function drawFlop()//Draw the initial 3 cards
   {
     board.push(drawCard());
   }
-  sendFlop();
   turn++;
   //bet();
 }
-
 exports.drawFlop = drawFlop;
+
+function sendFlop(){ //Send the flop to all players
+  for (i = 0; i<3; i++){
+    serv.io.sockets.emit("flop_send", board[i].id, board[i].num, board[i].house);
+  }
+}
+exports.sendFlop = sendFlop;
 
 function drawTurn()//4th card
 {
@@ -183,7 +183,12 @@ function drawTurn()//4th card
   turn++;
   //bet();
 }
+exports.drawTurn = drawTurn;
 
+function sendTurn(){ //Send the flop to all players
+  serv.io.sockets.emit("turn_send", board[3].id, board[3].num, board[3].house);
+}
+exports.sendTurn = sendTurn;
 
 function drawRiver()//5th card
 {
@@ -193,7 +198,12 @@ function drawRiver()//5th card
   turn++;
   //bet();
 }
+exports.drawRiver = drawRiver;
 
+function sendRiver(){ //Send the flop to all players
+  serv.io.sockets.emit("river_send", board[4].id, board[4].num, board[4].house);
+}
+exports.sendRiver = sendRiver;
 
 function revealCards()
 {

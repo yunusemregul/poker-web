@@ -14,5 +14,16 @@ $(() => {
    $("#start").click(function (){
   	socket.emit("round_start");
    });
+   $("#flop").click(function (){
+  	socket.emit("flop_send");
+   });
+   $("#turn").click(function (){
+  	socket.emit("turn_send");
+   });
+   $("#river").click(function (){
+  	socket.emit("river_send");
+   });
+   $("#reset").click(function (){
+  	socket.emit("reset");
+   });
 });
-

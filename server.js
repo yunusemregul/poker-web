@@ -54,14 +54,19 @@ io.on("connection", (socket) => {
 
   socket.on("send_bet", (amount) => { 
     var player = connectedPlayers.find((player) => player.id === socket.id);
+    if (!table.checkPlayerTurn(player)){
+      socket.emit("chat", "Not your turn");
+    } else {
+      table.takeBet(player, amount);
+      table.nextTurn();
+      player.updateChips();   
+    }
 
-    table.takeBet(player, amount);
-    player.updateChips();
-    console.log(table.pot);
   })
 
   socket.on("round_start", () => {
     card.startRound();
+    table.resetTurns();
     player.updateChips();
   })
 });

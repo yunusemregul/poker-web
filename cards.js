@@ -116,7 +116,7 @@ function startRound()//Start of a round, give each player two cards, big blind a
   len = players.length;
   draws = 0;
   turn = 0;
-
+  
   createDeck();
 
   for (var i = 0;i < len; i++)

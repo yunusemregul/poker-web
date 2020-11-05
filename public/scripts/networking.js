@@ -32,7 +32,14 @@ socket.on("sendFlop", (id, num, house) => {
   $("#chat").append("Flop: " + cardNames[num] + " of " + houses[house] + "<br/>");
 });
 
+socket.on("your_turn", () => {
+	$("#chat").append("Your turn" + "<br/>");	
+})
 function sendBet(amount){
-	socket.emit("send_bet", parseInt(amount));
+	if (amount <= 0) {
+		$("#chat").append("Can't bet lower than 1." + "<br/>");	
+	} else {
+		socket.emit("send_bet", parseInt(amount));		
+	}
 }
 

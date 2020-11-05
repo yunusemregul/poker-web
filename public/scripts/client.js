@@ -8,7 +8,7 @@ $(() => {
       $("#chat-entry").val("");
     }
   });
-  $("#press").click(function (){
+  $("#bet").click(function (){
   	sendBet($("#chat-entry").val());
    });
    $("#start").click(function (){

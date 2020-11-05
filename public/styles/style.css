@@ -1,5 +1,10 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+
 .chatbox {
-  background-color: #333;
+  background-color: #444;
   width: 300px;
   height: 300px;
   display: flex;
@@ -8,14 +13,14 @@
 }
 
 .chatbox-title {
-  background-color: black;
+  background-color: #111;
   margin-bottom: 5px;
   padding: 8px;
 }
 
 .chatbox-body {
   flex: 1 1 auto;
-  background-color: #111;
+  background-color: #222;
   overflow-y: scroll;
   overflow-wrap: break-word;
   padding: 6px;
@@ -24,7 +29,7 @@
 }
 
 #chat-entry {
-  background-color: #000;
+  background-color: #111;
   outline: none;
   border: 0px solid;
   height: 25px;

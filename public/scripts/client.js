@@ -8,9 +8,9 @@ $(() => {
       $("#chat-entry").val("");
     }
   });
-  $("#press").click(function (){
-  	socket.emit("clickedButton");
-   });
+  $("#press").click(function () {
+    socket.emit("clickedButton");
+  });
 });
 
 socket.on("chat", (data) => {
@@ -22,13 +22,13 @@ socket.on("error", (err) => {
 });
 
 socket.on("sendCards", (id, num, house) => {
-	cards.push(new Card(id, num, house));
-	$("#chat").append("Your card: " + cardNames[num] + " of " + houses[house]+"<br/>");
-	console.log(cards);
-})
+  cards.push(new Card(id, num, house));
+  $("#chat").append("Your card: " + cardNames[num] + " of " + houses[house] + "<br/>");
+  console.log(cards);
+});
 
 socket.on("sendFlop", (id, num, house) => {
-	board.push(new Card(id, num, house));
-	console.log(board);
-	$("#chat").append("Flop: " + cardNames[num] + " of " + houses[house]+"<br/>");
-})
+  board.push(new Card(id, num, house));
+  console.log(board);
+  $("#chat").append("Flop: " + cardNames[num] + " of " + houses[house] + "<br/>");
+});

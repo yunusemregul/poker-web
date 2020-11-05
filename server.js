@@ -17,7 +17,7 @@ const card = require("./cards.js");
 
 var connectedPlayers = [];
 
-var count = 0;//Temporary so I can test startRound after 2 players connect
+var count = 0; //Temporary so I can test startRound after 2 players connect
 
 exports.connectedPlayers = connectedPlayers;
 
@@ -59,7 +59,7 @@ io.on("connection", (socket) => {
     }
   });
   socket.on("clickedButton", () => {
-  	card.drawFlop();
+    card.drawFlop();
   });
 });
 

@@ -12,10 +12,13 @@
   overflow: hidden;
 }
 
-.chatbox-title {
+.chatbox-title-box {
   background-color: #111;
   margin-bottom: 5px;
   padding: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .chatbox-body {

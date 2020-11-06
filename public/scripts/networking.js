@@ -1,5 +1,9 @@
 socket.on("chat", (data) => {
-  $("#chat").append(data + "<br/>");
+  if (typeof data === "object") {
+    chatAdd(...data);
+  } else {
+    chatAdd(data);
+  }
 });
 
 socket.on("error", (err) => {
@@ -79,31 +83,31 @@ socket.on("reset", (num) => {
 
 socket.on("update_pot", (num) => {
   pot = num;
-  $("#chat").append("Pot is now " + pot + "<br/>");
+  chatAdd("Pot is now " + pot);
 });
 
 socket.on("update_chips", (amount) => {
   chips = amount;
-  $("#chat").append("You have: " + amount + " chips" + "<br/>");
+  chatAdd("You have: " + amount + " chips");
 });
 
 socket.on("sendFlop", (id, num, house) => {
   board.push(new Card(id, num, house));
   console.log(board);
-  $("#chat").append("Flop: " + cardNames[num] + " of " + houses[house] + "<br/>");
+  chatAdd("Flop: " + cardNames[num] + " of " + houses[house]);
 });
 
 socket.on("your_turn", () => {
-  $("#chat").append("Your turn" + "<br/>");
+  chatAdd("Your turn");
 });
 
 socket.on("player_won", (pot) => {
-  $("#chat").append("Your have won " + pot + "<br/>");
+  chatAdd("Your have won " + pot);
 });
 
 function sendBet(amount) {
   if (amount <= 0) {
-    $("#chat").append("Can't bet lower than 1." + "<br/>");
+    chatAdd("Can't bet lower than 1.");
   } else {
     socket.emit("send_bet", parseInt(amount));
   }

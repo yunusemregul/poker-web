@@ -34,3 +34,25 @@ $(() => {
     socket.emit("score");
   });
 });
+
+function chatAdd(...args) {
+  var str = "";
+  var startedSpan = false;
+  args.forEach((arg) => {
+    if (typeof arg !== "string") {
+      arg = arg.toString();
+    }
+
+    if (arg.startsWith("#")) {
+      str = str.concat('<span style="color: ' + arg + ';">');
+      startedSpan = true;
+    } else {
+      str = str.concat(arg);
+      if (startedSpan) {
+        str = str.concat("</span>");
+        startedSpan = false;
+      }
+    }
+  });
+  $("#chat").prepend("<p>" + str + "</p>");
+}

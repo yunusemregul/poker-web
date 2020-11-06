@@ -22,25 +22,40 @@ exports.connectedPlayers = connectedPlayers;
 
 var count = 0;
 
+/* 
+  adds some text to everybodys chat
+  you can color the text with giving color first then text
+  
+  sample usage: 
+    chatAdd("#ff0000", player.name + ": ", "#fff", text);
+*/
+function chatAdd(...args) {
+  io.sockets.emit("chat", args);
+}
+
+function chatAddExceptPlayer(player, ...args) {
+  player.socket.broadcast.emit("chat", args);
+}
+
 io.on("connection", (socket) => {
   var player = new card.Player(socket.id, "Player " + " " + count, 1000, socket);
   connectedPlayers.push(player);
 
   console.log(player.name + " connected");
-  socket.emit("chat", "You have connected."); // emit to this player
-  socket.broadcast.emit("chat", player.name + " has connected."); // emit to everyone except this player
+  player.chatAdd("You have connected.");
+  chatAddExceptPlayer(player, player.name + " has connected."); // emit to everyone except this player
   count++;
   socket.on("chat", (data) => {
     var text = data;
     text = text.replace(/<[^>]*>?/gm, ""); // strip html tags
 
     if (text.length == 0) {
-      socket.emit("chat", "Text can't be empty.");
+      player.chatAdd("Text can't be empty.");
       return;
     }
 
     var player = connectedPlayers.find((player) => player.id === socket.id);
-    io.sockets.emit("chat", player.name + ": " + text); // emit to everyone
+    chatAdd("#ff0000", player.name + ": ", "#fff", text);
   });
 
   socket.on("disconnect", () => {
@@ -48,7 +63,7 @@ io.on("connection", (socket) => {
       if (connectedPlayers[i].id === socket.id) {
         connectedPlayers.splice(i, 1);
         console.log(player.name + " disconnected");
-        socket.broadcast.emit("chat", player.name + " has disconnected."); // emit to everyone except this player
+        chatAddExceptPlayer(player, player.name + " has disconnected."); // emit to everyone except this player
         break;
       }
     }
@@ -57,9 +72,9 @@ io.on("connection", (socket) => {
   socket.on("send_bet", (amount) => {
     var player = connectedPlayers.find((player) => player.id === socket.id);
     if (!table.checkPlayerTurnToBet(player)) {
-      socket.emit("chat", "Not your turn");
+      player.chatAdd("Not your turn");
     } else {
-      socket.broadcast.emit("chat", player.name + " bet " + amount + " chips");
+      chatAddExceptPlayer(player, player.name + " bet " + amount + " chips");
       table.takeBet(player, amount);
       table.nextTurnToBet();
       player.updateChips();
@@ -96,9 +111,9 @@ io.on("connection", (socket) => {
     for (i = 0; i < connectedPlayers.length; i++) {
       card.checkPlayerScore(i);
       var str = connectedPlayers[i].name + " score: " + connectedPlayers[i].score;
-      io.sockets.emit("chat", str);
+      chatAdd(str);
     }
-    io.sockets.emit("chat", card.countScore().name);
+    chatAdd(card.countScore().name);
   });
 
   socket.on("player_fold", () => {

@@ -8,7 +8,7 @@ app.renderer.resize(window.innerWidth, window.innerHeight);
 
 $("body").append(app.view);
 
-PIXI.loader.add("assets/table.jpg").add("cards", "assets/cards.json").load(setup);
+PIXI.loader.add("table", "assets/table.png").add("cards", "assets/cards.json").load(setup);
 
 function createCardFace(x, y) {
   var tex = PIXI.loader.resources["cards"].textures;
@@ -56,10 +56,9 @@ function updateFace(face, id, num, suit) {
 }
 
 function setup() {
-  var background = new PIXI.Sprite(PIXI.loader.resources["assets/table.jpg"].texture);
+  var background = new PIXI.Sprite(PIXI.loader.resources["table"].texture);
   background.anchor.set(0.5);
   background.position.set(window.innerWidth / 2, window.innerHeight / 2);
-  background.scale.set((window.innerHeight / 1240) * 1.5);
 
   app.stage.addChild(background);
 }

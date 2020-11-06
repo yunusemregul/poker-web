@@ -132,12 +132,15 @@ function startRound()//Start of a round, give each player two cards, big blind a
     players[i].highCard = 0;
     players[i].fold = false;
     players[i].cards = [];//Reset cards after each round start
-    for (var j = 0; j < 2; j++)
-    {
-      players[i].cards.push(drawCard());     
-    }
-    players[i].sendCards();
   }
+
+//gotta stay legit man
+  for (var i = 0;i < 2; i++)
+    for (var j = 0; j < players.length; j++)
+      players[i].cards.push(drawCard());
+
+  for (var i = 0;i < 2; i++)
+    players[i].sendCards();
 }
 exports.startRound = startRound;
 

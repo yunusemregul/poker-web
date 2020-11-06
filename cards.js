@@ -120,6 +120,7 @@ function startRound()//Start of a round, give each player two cards, big blind a
   table.resetPlayersInPlay();
   board = [];
   table.phase = 0;
+  table.calls = 0;
   draws = 0;
 
   createDeck();
@@ -338,7 +339,7 @@ function countScore() {
     }
 
     if(scorePlayer.length == 1)
-      winner = scorePlayer;
+      exports.winner = scorePlayer;
 }
 
 exports.countScore = countScore;

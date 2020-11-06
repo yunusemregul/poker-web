@@ -133,6 +133,7 @@ function receiveBet(player, amount){
     player.chatAdd("#ff0000", "Not your turn");
   } else {
     if (currentBet == 0){
+      //First bet
       currentBet = amount;
       takeBet(player, amount);
       nextTurnToBet();
@@ -149,10 +150,12 @@ function receiveBet(player, amount){
       } else if ( amount < currentBet){
         player.chatAdd("Can't bet less than the currrent bet")
       } else {
+        //Normal bet
         calls++;
         takeBet(player, amount);
         player.updateChips();
         if (!checkNextPhase()){
+          //Check if we should go to next phase or just go to next player
           nextTurnToBet();
         }      
       }
@@ -162,19 +165,16 @@ function receiveBet(player, amount){
 exports.receiveBet = receiveBet;
 
 function endRound(){
-  var players = serv.connectedPlayers
-  for (i = 0; i < players.length; i++) {
-    if (!players[i].fold){
-      cards.checkPlayerScore(i);
-      var str = players[i].name + " score: " + players[i].score;
-      serv.chatAdd(str);     
-    }
-  }
-  calls = 0;
   console.log(dealer);
-  currentPlayerToBet = nextPlayerIndex(dealer);
+  dealer = nextPlayerIndex(dealer);
+  setCurrentPlayerToBet(dealer);
   serv.chatAdd(cards.countScore().name);
 }
+/*
+checkNextPhase()
+Return if you should proceed to next round by comparing the number of players in play
+with the number of calls there was.
+*/
 
 function checkNextPhase(){
   if (playersInPlay == calls){
@@ -184,23 +184,39 @@ function checkNextPhase(){
     return false;
   }
 }
+/*
+checkWinByFold()
+Check if there is a winner after a player folds
+*/
 function checkWinByFold() {
   if ((playersInPlay == 1)) {
     giveVictoryToPlayer(nextPlayerIndex(currentPlayerToBet));
-    calls = 0;
+    endRound();
     return true;
   } else {
     return false;
   }
 }
-
+/*
+giveVictoryToPlayer
+Check if there is a winner after a player folds
+*/
 function giveVictoryToPlayer(player) {
   player.addChips(pot);
   serv.io.to(player.id).emit("player_won", pot);
   serv.io.sockets.emit("reset");
-  pot = 0;
-  console.log(dealer.name);
-  dealer = nextPlayerIndex(dealer);
+}
+
+function checkWinner(){
+  var players = serv.connectedPlayers
+  for (i = 0; i < players.length; i++) {
+    if (!players[i].fold){
+      cards.checkPlayerScore(i);
+      var str = players[i].name + " score: " + players[i].score;
+      serv.chatAdd(str);  
+    }
+  }
+  return cards.countScore();
 }
 
 var currentBet = 0;

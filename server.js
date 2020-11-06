@@ -137,7 +137,11 @@ io.on("connection", (socket) => {
       var str = connectedPlayers[i].name + " score: " + connectedPlayers[i].score;
       chatAdd(str);
     }
-    chatAdd(cards.countScore().name);
+    cards.countScore();
+    console.log(cards.winner);
+    for (i = 0;i < cards.winner.length;i++){
+      chatAdd(cards.winner[i].name);
+    }
   });
 
   socket.on("player_fold", () => {

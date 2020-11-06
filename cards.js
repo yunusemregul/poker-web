@@ -174,6 +174,7 @@ function drawRiver()//5th card
   drawCard();
 
   board.push(drawCard());
+  console.log(board);
 }
 exports.drawRiver = drawRiver;
 
@@ -260,6 +261,8 @@ function checkPlayerScore(playerId) {
     return a.num - b.num;
   });
 
+  //console.log(scoreCard);
+
   //highCard
   for(var i = 0;i < 7;i++) {
     if(scoreCard[i].num > players[playerId].highCard) {
@@ -279,9 +282,6 @@ function checkPlayerScore(playerId) {
             if(scoreCard[i].num == scoreCard[k].num) {
               players[playerId].score = 3;
               players[playerId].highTripple = scoreCard[i].num;
-
-              if(scoreCard[i].num == 1)
-                players[playerId].highTripple = 14;
             }
 
   //pair
@@ -300,7 +300,7 @@ function checkPlayerScore(playerId) {
 
         if(players[playerId].score == 3)
           players[playerId].score = 6;
-      }
+      }    
 
   if(players[playerId].highPair == 1)
     players[playerId].highPair == 14;

@@ -32,7 +32,7 @@
       "sourceSize": { "w": 51, "h": 76 },
       "pivot": { "x": 0.5, "y": 0.5 }
     },
-    "0_14.png": {
+    "0_1.png": {
       "frame": { "x": 810, "y": 261, "w": 67, "h": 81 },
       "rotated": true,
       "trimmed": false,
@@ -136,7 +136,7 @@
       "sourceSize": { "w": 51, "h": 76 },
       "pivot": { "x": 0.5, "y": 0.5 }
     },
-    "1_14.png": {
+    "1_1.png": {
       "frame": { "x": 711, "y": 267, "w": 67, "h": 81 },
       "rotated": true,
       "trimmed": false,

@@ -77,7 +77,7 @@ io.on("connection", (socket) => {
   })
 
   socket.on("river_send", () => {
-    card.drawFlop();
+    card.drawRiver();
     card.sendRiver();
   })
   socket.on("round_start", () => {

@@ -1,3 +1,6 @@
+const serv = require("./server.js")
+const table = require("./table.js")
+
 var deck = [];
 var houses = ["Heart", "Spades", "Club", "Diamond"]; //I have to check rules to see if there's a stronger house
 var cardNames = ["Ace", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Jack", "Queen", "King"]
@@ -12,6 +15,7 @@ var board = [];
 var gameOn;
 var scoreCard;
 var winner;
+exports.winner = winner;
 
 function Card(id, num, house, name)
 {
@@ -55,9 +59,6 @@ function Player(id, name, chips, socket)
       serv.io.to(this.id).emit("cards_send", this.cards[i].id, this.cards[i].num, this.cards[i].house);      
     }
   }
-  this.socket.on("test2", () => {
-    console.log("test");
-  })
 }
 
 exports.Player = Player;
@@ -69,19 +70,19 @@ function createDeck()
   {
     if (i < 13)
     {
-      deck[i] = new Card(i, i+1, houses[0], cardNames[i]);
+      deck[i] = new Card(i, i+1, 0, cardNames[i]);
     }
     if (i > 12 && i < 26)
     {
-      deck[i] = new Card(i, i-12, houses[1], cardNames[i-13]);
+      deck[i] = new Card(i, i-12, 1, cardNames[i-13]);
     }
     if (i > 25 && i < 39)
     {
-      deck[i] = new Card(i, i-25, houses[2], cardNames[i-26]);
+      deck[i] = new Card(i, i-25, 2, cardNames[i-26]);
     }
     if (i > 38)
     {
-      deck[i] = new Card(i, i-38, houses[3], cardNames[i-39]);
+      deck[i] = new Card(i, i-38, 3, cardNames[i-39]);
     }
   }
 }
@@ -106,85 +107,34 @@ function drawCard() //Testing card draws
 }
 exports.drawCard = drawCard;
 
-<<<<<<< HEAD
-const serv = require("./server.js")
-
-function main()
-{
-  turn = 0;
-  gameOn = true;
-
-  while(gameOn == true) {
-    switch(turn) {
-      case 0:
-      startRound();
-      showBoard();
-      turn++;
-      break;
-
-      case 1:
-      drawFlop();
-      showBoard();
-      turn++;
-      break;
-
-      case 2:
-      drawTurn();
-      showBoard();
-      turn++;
-      break;
-
-      case 3:
-      drawRiver();
-      showBoard();
-      turn++;
-      break;
-
-      case 4:
-      countScore();
-      turn++;
-      break;
-
-      default:
-      gameOn = false;
-    }
-  }
-}
 function startRound()//Start of a round, give each player two cards, big blind and small blind removed
 {
-  /*players = serv.connectedPlayers;
-  console.log(serv.connectedPlayers);*/
-  players[0] = new Player(0,"Pwhy", 500000);
-  players[1] = new Player(1,"Charozoid", 666);
 
+  players = serv.connectedPlayers;
+  table.pot = 0;
+  table.playersInPlay = players.length;
+  board = [];
+  table.phases = 0;
   draws = 0;
 
   createDeck();
 
-  for(var i = 0;i < players.length;i++) {
+  for (var i = 0;i < players.length; i++)
+  {
     players[i].score = 0;
     players[i].highTripple = 0;
     players[i].highPair = 0;
     players[i].highCard = 0;
     players[i].fold = false;
     players[i].cards = [];//Reset cards after each round start
-  }
-
-  table.pot = 0;
-  table.playersInPlay = players.length;
-  board = [];
-  table.phases = 0;
-
-  for (var i = 0;i < len; i++)
-  {
-    players[i].fold = false;
-    players[i].cards = [];//Reset cards after each round start
     for (var j = 0; j < 2; j++)
     {
-      players[i].cards.push(drawCard());
+      players[i].cards.push(drawCard());     
     }
+    players[i].sendCards();
   }
 }
+exports.startRound = startRound;
 
 function drawFlop()//Draw the initial 3 cards
 {
@@ -233,16 +183,6 @@ function sendRiver(){ //Send the flop to all players
 exports.sendRiver = sendRiver;
 
 function countScore() {
-
-  for(var i = 0;i < players.length;i++) {
-    checkPlayerScore(i);
-    console.log("Player " + (i + 1) + " : " + players[i].score);
-    console.log("highCard " + " : " + players[i].highCard);
-    console.log("highPair " + " : " + players[i].highPair);
-    console.log("highTripple " + " : " + players[i].highTripple);
-  }
-
-
   winner = 0;
 
   for (var i = 0;i < players.length;i++) {
@@ -302,13 +242,10 @@ function countScore() {
       }
     }
   }
-
-
-
-  console.log(players[winner].name);
-
+  return players[winner];
 }
 
+exports.countScore = countScore;
 function checkPlayerScore(playerId) {
 
   scoreCard = [];
@@ -322,9 +259,6 @@ function checkPlayerScore(playerId) {
   scoreCard.sort(function (a , b) {
     return a.num - b.num;
   });
-
-  console.log(scoreCard);
-
 
   //highCard
   for(var i = 0;i < 7;i++) {
@@ -395,8 +329,6 @@ function checkPlayerScore(playerId) {
     else
       four = 0;
   }
-
-
   
     
 
@@ -494,12 +426,7 @@ function checkPlayerScore(playerId) {
       players[playerId].score = 8
   }
 }
-
-
-
-
-main();
-
+exports.checkPlayerScore = checkPlayerScore;
 /*
 Six of Spades
 Jack of Spades

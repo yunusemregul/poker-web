@@ -30,4 +30,7 @@ $(() => {
    $("#fold").click(function (){
   	socket.emit("player_fold");
    });
+   $("#score").click(function (){
+  	socket.emit("score");
+   });
 });

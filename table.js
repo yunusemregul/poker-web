@@ -123,15 +123,12 @@ function nextPlayerIndex(player){
 function nextTurnToBet(){
 	var players = serv.connectedPlayers;
 	var len = players.length;
-	var nextIndex = 
 	currentPlayerToBet = nextPlayerIndex(currentPlayerToBet);
-	console.log(currentPlayerToBet.fold);
-
+	
 	if (currentPlayerToBet.fold){
 		nextTurnToBet();
 	} else {
 		serv.io.to(currentPlayerToBet.id).emit("your_turn");
 	}
-	console.log(currentPlayerToBet.name);
 }
 exports.nextTurnToBet = nextTurnToBet;

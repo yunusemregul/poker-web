@@ -92,6 +92,15 @@ io.on("connection", (socket) => {
     table.resetTurnsToBet();
   })
 
+  socket.on("score", () => {
+    for (i = 0;i < connectedPlayers.length; i++){
+      card.checkPlayerScore(i);
+      var str = connectedPlayers[i].name + " score: " + connectedPlayers[i].score;
+      io.sockets.emit("chat", str);
+    }
+    io.sockets.emit("chat", card.countScore().name);
+  })
+
   socket.on("player_fold", () => {
     var player = connectedPlayers.find((player) => player.id === socket.id);
     if (!table.checkPlayerTurnToBet(player)){

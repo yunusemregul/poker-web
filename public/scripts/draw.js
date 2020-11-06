@@ -8,7 +8,7 @@ app.renderer.resize(window.innerWidth, window.innerHeight);
 
 $("body").append(app.view);
 
-PIXI.loader.add("assets/table.jpg").add("cards", "assets/cards.json").load(setup);
+PIXI.loader.add("table", "assets/table.png").add("cards", "assets/cards.json").load(setup);
 
 function createCardFace(x, y) {
   var tex = PIXI.loader.resources["cards"].textures;
@@ -42,35 +42,37 @@ function createCardFace(x, y) {
   return face;
 }
 
+<<<<<<< HEAD
 function updateFace(face, id, num, suit)
 {
   num = num;
+=======
+function updateFace(face, id, num, suit) {
+  num = num + 1;
   suit = suit + 1;
   //console.log(num, suit);
   var tex = PIXI.loader.resources["cards"].textures;
 
-  face.children[1].texture = num > 0 ? tex[suit % 2 + "_" + num + ".png"]: PIXI.Texture.EMPTY;
+  face.children[1].texture = num > 0 ? tex[(suit % 2) + "_" + num + ".png"] : PIXI.Texture.EMPTY;
   face.children[2].texture = suit !== 0 ? tex[suit + "_big.png"] : PIXI.Texture.EMPTY;
   face.children[3].texture = suit !== 0 ? tex[suit + "_small.png"] : PIXI.Texture.EMPTY;
 
   face.id = id; //This is used to find the children in app.stage.children
-
 }
 
 function setup() {
-  var background = new PIXI.Sprite(PIXI.loader.resources["assets/table.jpg"].texture);
+  var background = new PIXI.Sprite(PIXI.loader.resources["table"].texture);
   background.anchor.set(0.5);
   background.position.set(window.innerWidth / 2, window.innerHeight / 2);
-  background.scale.set((window.innerHeight / 1240) * 1.5);
 
   app.stage.addChild(background);
 }
 
 var cardFaces = []; //Store the play cards faces in this array
 
-function drawCards(){
-  for (i = 0; i < 2; i++){
-    cardFaces[i] = createCardFace(850 + i * 150, 600)
+function drawCards() {
+  for (i = 0; i < 2; i++) {
+    cardFaces[i] = createCardFace(850 + i * 150, 600);
     app.stage.addChild(cardFaces[i]);
     console.log(cardFaces);
   }
@@ -78,19 +80,22 @@ function drawCards(){
 
 var boardFaces = []; //Store the board faces in this array
 
-function drawFlop(){ //Create the 3 flop cards faces
-  for (i = 0; i < 3; i++){
+function drawFlop() {
+  //Create the 3 flop cards faces
+  for (i = 0; i < 3; i++) {
     boardFaces[i] = createCardFace(600 + i * 150, 300);
     app.stage.addChild(boardFaces[i]);
   }
 }
 
-function drawTurn(){ //Create the turn card face
+function drawTurn() {
+  //Create the turn card face
   boardFaces[3] = createCardFace(1050, 300);
   app.stage.addChild(boardFaces[3]);
 }
 
-function drawRiver(){ //Create the river card face
+function drawRiver() {
+  //Create the river card face
   boardFaces[4] = createCardFace(1200, 300);
 
   app.stage.addChild(boardFaces[4]);

@@ -1,6 +1,7 @@
 * {
   padding: 0;
   margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .chatbox {
@@ -12,10 +13,13 @@
   overflow: hidden;
 }
 
-.chatbox-title {
+.chatbox-title-box {
   background-color: #111;
   margin-bottom: 5px;
   padding: 8px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 .chatbox-body {
@@ -31,7 +35,15 @@
 #chat-entry {
   background-color: #111;
   outline: none;
-  border: 0px solid;
+  border: 0px;
   height: 25px;
   padding: 6px;
+}
+
+.test-button {
+  outline: none;
+  border: 0px;
+  margin-right: 4px;
+  padding: 4px;
+  background-color: chocolate;
 }

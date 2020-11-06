@@ -59,6 +59,10 @@ function Player(id, name, chips, socket)
       serv.io.to(this.id).emit("cards_send", this.cards[i].id, this.cards[i].num, this.cards[i].house);      
     }
   }
+
+  this.chatAdd = (...args) => {
+    socket.emit("chat",args);
+  }
 }
 
 exports.Player = Player;

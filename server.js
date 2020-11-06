@@ -42,20 +42,43 @@ io.on("connection", (socket) => {
   connectedPlayers.push(player);
 
   console.log(player.name + " connected");
-  player.chatAdd("You have connected.");
-  chatAddExceptPlayer(player, player.name + " has connected."); // emit to everyone except this player
+  player.chatAdd("#1554db", "You", " have connected.");
+  player.chatAdd("#ffff00", "Change your name with !name");
+  chatAddExceptPlayer(player, "#ff0000", player.name, " has connected."); // emit to everyone except this player
   count++;
   socket.on("chat", (data) => {
+    var player = connectedPlayers.find((player) => player.id === socket.id);
     var text = data;
     text = text.replace(/<[^>]*>?/gm, ""); // strip html tags
 
     if (text.length == 0) {
-      player.chatAdd("Text can't be empty.");
+      player.chatAdd("#ff0000", "Text can't be empty.");
       return;
     }
 
-    var player = connectedPlayers.find((player) => player.id === socket.id);
-    chatAdd("#ff0000", player.name + ": ", "#fff", text);
+    if (text.startsWith("!name")) {
+      var splitted = text.split(" ");
+
+      if (splitted.length != 2) {
+        player.chatAdd("#ffff00", "USAGE EXAMPLE: ", "!name charlie");
+        return;
+      }
+
+      var name = splitted[1];
+
+      if (name.length < 3) {
+        player.chatAdd("#ff0000", "Your name must be at least 3 characters length.");
+        return;
+      }
+
+      player.chatAdd("#1554db", "You", " successfully changed your name from ", "#1554db", player.name, " to ", "#1554db", name, ".");
+      player.name = name;
+
+      return;
+    }
+
+    player.chatAdd("#1554db", player.name + ": ", text);
+    chatAddExceptPlayer(player, "#ff0000", player.name + ": ", text);
   });
 
   socket.on("disconnect", () => {
@@ -63,7 +86,7 @@ io.on("connection", (socket) => {
       if (connectedPlayers[i].id === socket.id) {
         connectedPlayers.splice(i, 1);
         console.log(player.name + " disconnected");
-        chatAddExceptPlayer(player, player.name + " has disconnected."); // emit to everyone except this player
+        chatAddExceptPlayer(player, "#ff0000", player.name + " has disconnected."); // emit to everyone except this player
         break;
       }
     }
@@ -72,7 +95,7 @@ io.on("connection", (socket) => {
   socket.on("send_bet", (amount) => {
     var player = connectedPlayers.find((player) => player.id === socket.id);
     if (!table.checkPlayerTurnToBet(player)) {
-      player.chatAdd("Not your turn");
+      player.chatAdd("#ff0000", "Not your turn");
     } else {
       chatAddExceptPlayer(player, player.name + " bet " + amount + " chips");
       table.takeBet(player, amount);

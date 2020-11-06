@@ -21,7 +21,7 @@ function Card(id, num, house, name)
   this.name = name;
 }
 
-function Player(id, name, chips)
+function Player(id, name, chips, socket)
 {
   this.id = id;
   this.name = name;
@@ -31,12 +31,40 @@ function Player(id, name, chips)
   this.highCard;
   this.highPair;
   this.highTripple;
+  this.cards = []; //Probably don't need an array for 2 cards we could do player.card1 & card2
+  this.socket = socket;
+  this.fold = false;
+
+  this.removeChips = (amount) => {
+    if (this.chips - amount < 0){
+      console.log("Not enough chips");
+      return false;
+    }
+    this.chips = this.chips - amount;
+    return true;
+  }
+  this.addChips = (amount) => {
+    this.chips = this.chips + amount;
+  }
+  this.updateChips = () => {
+    serv.io.to(this.id).emit("update_chips", this.chips);
+  }
+  this.sendCards = () => {
+    for (i = 0; i < 2; i++)
+    {
+      serv.io.to(this.id).emit("cards_send", this.cards[i].id, this.cards[i].num, this.cards[i].house);      
+    }
+  }
+  this.socket.on("test2", () => {
+    console.log("test");
+  })
 }
 
 exports.Player = Player;
 
 function createDeck()
 {
+  deck = [];
   for (i=0;i < 52;i++) //Create all 52 cards with id, #, house and name
   {
     if (i < 13)
@@ -78,6 +106,7 @@ function drawCard() //Testing card draws
 }
 exports.drawCard = drawCard;
 
+<<<<<<< HEAD
 const serv = require("./server.js")
 
 function main()
@@ -121,7 +150,6 @@ function main()
     }
   }
 }
-
 function startRound()//Start of a round, give each player two cards, big blind and small blind removed
 {
   /*players = serv.connectedPlayers;
@@ -138,45 +166,24 @@ function startRound()//Start of a round, give each player two cards, big blind a
     players[i].highTripple = 0;
     players[i].highPair = 0;
     players[i].highCard = 0;
+    players[i].fold = false;
+    players[i].cards = [];//Reset cards after each round start
   }
 
-  for (var i = 0;i < 2; i++)
+  table.pot = 0;
+  table.playersInPlay = players.length;
+  board = [];
+  table.phases = 0;
+
+  for (var i = 0;i < len; i++)
   {
-    for (var j = 0; j < players.length; j++)
+    players[i].fold = false;
+    players[i].cards = [];//Reset cards after each round start
+    for (var j = 0; j < 2; j++)
     {
       players[i].cards.push(drawCard());
     }
   }
-}
-
-//exports.startRound = startRound;
-
-
-function showBoard()
-{
-  //console.clear();
-
-  console.log("############### Board ###############");
-
-  if(turn > 0)
-  {
-      for(var i = 0;i < 3;i++)
-        console.log(board[i].name + " of " + board[i].house);
-  }
-
-  if(turn > 1)
-  {
-      console.log(board[3].name + " of " + board[3].house);
-  }
-
-  if(turn > 2)
-  {
-      console.log(board[4].name + " of " + board[4].house);
-  }
-
-  console.log("#####################################");
-  
-  showCard();
 }
 
 function drawFlop()//Draw the initial 3 cards
@@ -189,13 +196,15 @@ function drawFlop()//Draw the initial 3 cards
   }
 }
 
-function showCard()
-{
-  console.log("Player 1 has : \n" + players[0].cards[0].name + " of " + players[0].cards[0].house + "\n" + players[0].cards[1].name + " of " + players[0].cards[1].house);
-  console.log("#####################################");
-  console.log("Player 2 has : \n" + players[1].cards[0].name + " of " + players[1].cards[0].house + "\n" + players[1].cards[1].name + " of " + players[1].cards[1].house);
+exports.drawFlop = drawFlop;
+
+function sendFlop(){ //Send the flop to all players
+  for (i = 0; i<3; i++){
+    serv.io.sockets.emit("flop_send", board[i].id, board[i].num, board[i].house);
+  }
 }
 
+exports.sendFlop = sendFlop;
 
 function drawTurn()//4th card
 {
@@ -203,7 +212,12 @@ function drawTurn()//4th card
 
   board.push(drawCard());
 }
+exports.drawTurn = drawTurn;
 
+function sendTurn(){ //Send the flop to all players
+  serv.io.sockets.emit("turn_send", board[3].id, board[3].num, board[3].house);
+}
+exports.sendTurn = sendTurn;
 
 function drawRiver()//5th card
 {
@@ -211,7 +225,12 @@ function drawRiver()//5th card
 
   board.push(drawCard());
 }
+exports.drawRiver = drawRiver;
 
+function sendRiver(){ //Send the flop to all players
+  serv.io.sockets.emit("river_send", board[4].id, board[4].num, board[4].house);
+}
+exports.sendRiver = sendRiver;
 
 function countScore() {
 

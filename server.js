@@ -20,14 +20,16 @@ var connectedPlayers = [];
 
 exports.connectedPlayers = connectedPlayers;
 
+var count = 0;
+
 io.on("connection", (socket) => {
-  var player = new card.Player(socket.id, "Player ", 1000);
+  var player = new card.Player(socket.id, "Player "+ " " + count, 1000, socket);
   connectedPlayers.push(player);
 
   console.log(player.name + " connected");
   socket.emit("chat", "You have connected."); // emit to this player
   socket.broadcast.emit("chat", player.name + " has connected."); // emit to everyone except this player
-
+  count++;
   socket.on("chat", (data) => {
     var text = data;
     text = text.replace(/<[^>]*>?/gm, ""); // strip html tags
@@ -54,20 +56,54 @@ io.on("connection", (socket) => {
 
   socket.on("send_bet", (amount) => { 
     var player = connectedPlayers.find((player) => player.id === socket.id);
-    if (!table.checkPlayerTurn(player)){
+    if (!table.checkPlayerTurnToBet(player)){
       socket.emit("chat", "Not your turn");
     } else {
+      socket.broadcast.emit("chat", player.name + " bet " + amount + " chips");
       table.takeBet(player, amount);
-      table.nextTurn();
+      table.nextTurnToBet();
       player.updateChips();   
     }
-
   })
 
+  socket.on("flop_send", () => {
+    card.drawFlop();
+    card.sendFlop();
+  })
+
+  socket.on("turn_send", () => {
+    card.drawTurn();
+    card.sendTurn();
+  })
+
+  socket.on("river_send", () => {
+    card.drawFlop();
+    card.sendRiver();
+  })
   socket.on("round_start", () => {
+    var player = connectedPlayers.find((player) => player.id === socket.id);
     card.startRound();
-    table.resetTurns();
+    table.nextTurnToBet();
     player.updateChips();
+  })
+
+  socket.on("reset", () => {
+    io.sockets.emit("reset");
+    table.resetTurnsToBet();
+  })
+
+  socket.on("player_fold", () => {
+    var player = connectedPlayers.find((player) => player.id === socket.id);
+    if (!table.checkPlayerTurnToBet(player)){
+      console.log("Not your turn")
+    } else {
+      if (player.fold){
+       console.log("Already folded how are you here")
+      } else {
+        table.playerFold(player);
+      }
+    }
+
   })
 });
 

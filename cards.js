@@ -189,69 +189,155 @@ function sendRiver(){ //Send the flop to all players
 exports.sendRiver = sendRiver;
 
 function countScore() {
-  winner = 0;
+  winner = [];
+  var scorePlayer = [];
+  var highScore = 0;
+  var highCard = 0;
+  var highPair = 0;
+  var highTripple = 0;
 
-  for (var i = 0;i < players.length;i++) {
-    if(players[i].score > players[winner].score)
-      winner = i;
+  for(var i = 0;i < players.length;i++) {
+    if(players[i].score > highScore)
+      highScore = players[i].score;
+  }
 
-    if(players[i].score == players[winner].score){
-      switch(players[i].score) {
-        case 0:
-        if(players[i].highCard > players[winner].highCard)
-          winner = i;
-        break;
+  for(var i = 0;i < players.length;i++) {
+    if(players[i].score == highScore)
+      scorePlayer.push(players[i]);
+  }
 
-        case 1:
-        if(players[i].highPair > players[winner].highPair)
-          winner = i;
-        break;
+  if(scorePlayer.length > 1) {
+      switch(highScore) {
+          case 0:
+            for(var j = 0;j < scorePlayer.length;j++)
+              if(scorePlayer[j].highCard > highCard)
+                highCard = scorePlayer[j].highCard;
 
-        case 2:
-        if(players[i].highPair > players[winner].highPair)
-          winner = i;
-        break;
+            for(var j = 0;j < scorePlayer.length;j++)
+              if(scorePlayer[j].highCard == highCard)
+                winner.push(scorePlayer[j]);
+          break;
+            
+          case 1:
+            for(var j = 0;j < scorePlayer.length;j++)
+              if(scorePlayer[j].highPair > highPair)
+                highPair = scorePlayer[j].highPair;
 
-        case 3:
-        if(players[i].highTripple > players[winner].highTripple)
-          winner = i;
-        break;
+            for(var j = 0;j < scorePlayer.length;j++)
+              if(scorePlayer[j].highPair == highPair)
+                winner.push(scorePlayer[j]);
 
-        case 4:
-        if(players[i].highCard > players[winner].highCard)
-          winner = i;
-        break;
+            if(winner.length > 1) {
+              for(var j = 0;j < winner.length;j++)
+                if(winner[j].highCard > highCard)
+                  highCard = winner[j].highCard;
 
-        case 5:
-        if(players[i].highCard > players[winner].highCard)
-          winner = i;
-        break;
+              for(var j = 0;j < winner.length;j++)
+                if(winner[j].highCard < highCard)
+                  winner.splice(j , 1);
+            }
 
-        case 6:
-        if(players[i].highTripple > players[winner].highTripple)
-          winner = i;
+          break;
 
-        if(players[i].highTripple == players[winner].highTripple)
-          if(players[i].highPair > players[winner].highPair)
-            winner = i;
-        break;
+          case 2:
+            for(var j = 0;j < scorePlayer.length;j++)
+              if(scorePlayer[j].highPair > highPair)
+                highPair = scorePlayer[j].highPair;
 
-        case 7:
-        if(players[i].highPair > players[winner].highPair)
-          winner = i;
-        break;
+            for(var j = 0;j < scorePlayer.length;j++)
+              if(scorePlayer[j].highPair == highPair)
+                winner.push(scorePlayer[j]);
 
-        case 8:
-        if(players[i].highCard > players[winner].highCard)
-          winner = i;
-        break;
+            if(winner.length > 1) {
+              for(var j = 0;j < winner.length;j++)
+                if(winner[j].highCard > highCard)
+                  highCard = winner[j].highCard;
+
+              for(var j = 0;j < winner.length;j++)
+                if(winner[j].highCard < highCard)
+                  winner.splice(j , 1);
+            }
+          break;
+
+          case 3:
+            for(var j = 0;j < scorePlayer.length;j++)
+              if(scorePlayer[j].highTripple > highTripple)
+                highTripple = scorePlayer[j].highTripple;
+
+            for(var j = 0;j < scorePlayer.length;j++)
+              if(scorePlayer[j].highTripple == highTripple)
+                winner.push(scorePlayer[j]);
+          break;
+
+          case 4:
+            for(var j = 0;j < scorePlayer.length;j++)
+              if(scorePlayer[j].highCard > highCard)
+                highCard = scorePlayer[j].highCard;
+
+            for(var j = 0;j < scorePlayer.length;j++)
+              if(scorePlayer[j].highCard == highCard)
+                winner.push(scorePlayer[j]);
+          break;
+
+          case 5:
+            for(var j = 0;j < scorePlayer.length;j++)
+              if(scorePlayer[j].highCard > highCard)
+                highCard = scorePlayer[j].highCard;
+
+            for(var j = 0;j < scorePlayer.length;j++)
+              if(scorePlayer[j].highCard == highCard)
+                winner.push(scorePlayer[j]);
+          break;
+
+          case 6:
+            for(var j = 0;j < scorePlayer.length;j++)
+              if(scorePlayer[j].highTripple > highTripple)
+                highTripple = scorePlayer[j].highTripple;
+
+            for(var j = 0;j < scorePlayer.length;j++)
+              if(scorePlayer[j].highTripple == highTripple)
+                winner.push(scorePlayer[j]);
+
+            if(winner.length > 1) {
+              for(var j = 0;j < winner.length;j++)
+                if(winner[j].highPair > highPair)
+                  highPair = winner[j].highPair;
+
+              for(var j = 0;j < winner.length;j++)
+                if(winner[j].highPair < highPair)
+                  winner.splice(j , 1);
+            }
+
+          break;
+
+          case 7:
+            for(var j = 0;j < scorePlayer.length;j++)
+              if(scorePlayer[j].highCard > highCard)
+                highCard = scorePlayer[j].highCard;
+
+            for(var j = 0;j < scorePlayer.length;j++)
+              if(scorePlayer[j].highCard == highCard)
+                winner.push(scorePlayer[j]);
+          break;
+
+          case 8:
+            for(var j = 0;j < scorePlayer.length;j++)
+              if(scorePlayer[j].highCard > highCard)
+                highCard = scorePlayer[j].highCard;
+
+            for(var j = 0;j < scorePlayer.length;j++)
+              if(scorePlayer[j].highCard == highCard)
+                winner.push(scorePlayer[j]);
+          break;
       }
     }
-  }
-  return players[winner];
+
+    if(scorePlayer.length == 1)
+      winner = scorePlayer;
 }
 
 exports.countScore = countScore;
+
 function checkPlayerScore(playerId) {
 
   scoreCard = [];
@@ -265,8 +351,6 @@ function checkPlayerScore(playerId) {
   scoreCard.sort(function (a , b) {
     return a.num - b.num;
   });
-
-  //console.log(scoreCard);
 
   //highCard
   for(var i = 0;i < 7;i++) {
@@ -431,6 +515,7 @@ function checkPlayerScore(playerId) {
       players[playerId].score = 8
   }
 }
+
 exports.checkPlayerScore = checkPlayerScore;
 /*
 Six of Spades

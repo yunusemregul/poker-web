@@ -44,12 +44,10 @@ function nextPhase() {
 exports.nextPhase = nextPhase;
 
 function takeBet(player, amount) {
-  if (player.chips > amount) {
+  if (player.chips >= amount) {
     player.removeChips(amount);
     serv.chatAddExceptPlayer(player, "#960a00", player.name," bet ", "#960a00", amount, " chips");
     addPotMoney(amount);
-  } else {
-    return 0;
   }
 }
 exports.takeBet = takeBet;

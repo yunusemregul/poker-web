@@ -42,13 +42,8 @@ function createCardFace(x, y) {
   return face;
 }
 
-<<<<<<< HEAD
-function updateFace(face, id, num, suit)
-{
-  num = num;
-=======
 function updateFace(face, id, num, suit) {
-  num = num + 1;
+  num = num;
   suit = suit + 1;
   //console.log(num, suit);
   var tex = PIXI.loader.resources["cards"].textures;

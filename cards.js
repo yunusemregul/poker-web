@@ -107,6 +107,7 @@ function drawCard() //Testing card draws
   card = deck[draw];
   deck[draw] = undefined; //Set the card in the deck as undefined to indicate it has been drawn
   draws++;
+
   return card;
 }
 exports.drawCard = drawCard;
@@ -116,9 +117,9 @@ function startRound()//Start of a round, give each player two cards, big blind a
 
   players = serv.connectedPlayers;
   table.pot = 0;
-  table.playersInPlay = players.length;
+  table.resetPlayersInPlay();
   board = [];
-  table.phases = 0;
+  table.phase = 0;
   draws = 0;
 
   createDeck();

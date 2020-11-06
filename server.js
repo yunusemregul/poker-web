@@ -13,8 +13,9 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/index.html");
 });
 
-const card = require("./cards.js");
+const cards = require("./cards.js");
 const table = require("./table.js");
+const {Player} = require("./cards.js");
 
 var connectedPlayers = [];
 
@@ -24,7 +25,7 @@ var count = 0;
 
 /* 
   adds some text to everybodys chat
-  you can color the text with giving color first then text
+  you can color the text wth giving color first then text
   
   sample usage: 
     chatAdd("#ff0000", player.name + ": ", "#fff", text);
@@ -32,13 +33,15 @@ var count = 0;
 function chatAdd(...args) {
   io.sockets.emit("chat", args);
 }
+exports.chatAdd = chatAdd;
 
 function chatAddExceptPlayer(player, ...args) {
   player.socket.broadcast.emit("chat", args);
 }
+exports.chatAddExceptPlayer = chatAddExceptPlayer;
 
 io.on("connection", (socket) => {
-  var player = new card.Player(socket.id, "Player " + " " + count, 1000, socket);
+  var player = new Player(socket.id, "Player " + " " + count, 1000, socket);
   connectedPlayers.push(player);
 
   console.log(player.name + " connected");
@@ -94,49 +97,47 @@ io.on("connection", (socket) => {
 
   socket.on("send_bet", (amount) => {
     var player = connectedPlayers.find((player) => player.id === socket.id);
-    if (!table.checkPlayerTurnToBet(player)) {
-      player.chatAdd("#ff0000", "Not your turn");
-    } else {
-      chatAddExceptPlayer(player, player.name + " bet " + amount + " chips");
-      table.takeBet(player, amount);
-      table.nextTurnToBet();
-      player.updateChips();
-    }
+    table.receiveBet(player, amount);
   });
 
   socket.on("flop_send", () => {
-    card.drawFlop();
-    card.sendFlop();
+    cards.drawFlop();
+    cards.sendFlop();
   });
 
   socket.on("turn_send", () => {
-    card.drawTurn();
-    card.sendTurn();
+    cards.drawTurn();
+    cards.sendTurn();
   });
 
   socket.on("river_send", () => {
-    card.drawRiver();
-    card.sendRiver();
+    cards.drawRiver();
+    cards.sendRiver();
   });
   socket.on("round_start", () => {
     var player = connectedPlayers.find((player) => player.id === socket.id);
-    card.startRound();
-    table.nextTurnToBet();
+    cards.startRound();
     player.updateChips();
   });
 
   socket.on("reset", () => {
     io.sockets.emit("reset");
+  });
+
+  socket.on("hard_reset", () => {
+    table.resetDealer();
+    console.log(table.dealer.name);
+    table.setCurrentPlayerToBet(table.dealer);
     table.resetTurnsToBet();
   });
 
   socket.on("score", () => {
     for (i = 0; i < connectedPlayers.length; i++) {
-      card.checkPlayerScore(i);
+      cards.checkPlayerScore(i);
       var str = connectedPlayers[i].name + " score: " + connectedPlayers[i].score;
       chatAdd(str);
     }
-    chatAdd(card.countScore().name);
+    chatAdd(cards.countScore().name);
   });
 
   socket.on("player_fold", () => {

@@ -33,6 +33,9 @@ $(() => {
   $("#score").click(function () {
     socket.emit("score");
   });
+  $("#hard_reset").click(function () {
+    socket.emit("hard_reset");
+  });
 });
 
 function chatAdd(...args) {

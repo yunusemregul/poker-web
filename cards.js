@@ -135,12 +135,14 @@ function startRound()//Start of a round, give each player two cards, big blind a
   }
 
 //gotta stay legit man
-  for (var i = 0;i < 2; i++)
-    for (var j = 0; j < players.length; j++)
-      players[i].cards.push(drawCard());
-
-  for (var i = 0;i < 2; i++)
-    players[i].sendCards();
+  for (var i = 0;i < 2; i++){
+    for (var j = 0; j < players.length; j++){
+      players[j].cards.push(drawCard());
+      if (players[j].cards.length == 2){
+        players[j].sendCards();
+      }
+    }
+  }
 }
 exports.startRound = startRound;
 

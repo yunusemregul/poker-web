@@ -89,8 +89,22 @@ io.on("connection", (socket) => {
 
   socket.on("reset", () => {
     io.sockets.emit("reset");
+    table.resetTurnsToBet();
   })
 
+  socket.on("player_fold", () => {
+    var player = connectedPlayers.find((player) => player.id === socket.id);
+    if (!table.checkPlayerTurnToBet(player)){
+      console.log("Not your turn")
+    } else {
+      if (player.fold){
+       console.log("Already folded how are you here")
+      } else {
+        table.playerFold(player);
+      }
+    }
+
+  })
 });
 
 io.on("error", (err) => {

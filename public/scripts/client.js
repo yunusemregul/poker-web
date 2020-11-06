@@ -28,6 +28,6 @@ $(() => {
   	socket.emit("reset");
    });
    $("#fold").click(function (){
-  	socket.emit("reset");
+  	socket.emit("player_fold");
    });
 });

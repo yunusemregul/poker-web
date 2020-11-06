@@ -45,21 +45,25 @@ socket.on("river_send", (id, num, house) => {
 socket.on("reset", (num) => { //Reset command from server, delete all the card faces, reset arrays
   var children = app.stage.children;
 
-  for (i = 0; i < 5; i++){ //Probably a better way to do this than comparing ids to app.stage childrens
-    var id = boardFaces[i].id;
-    for (j = 0; j < children.length; j++){
-      if (children[j].id == boardFaces[i].id){
-        app.stage.removeChild(children[j]);
-      }
+  for (i = 0; i < 5; i++){ //Probably a better way to do this than comparing ids to app.stage childrens\
+    if (boardFaces[i]){
+      var id = boardFaces[i].id;
+      for (j = 0; j < children.length; j++){
+        if (children[j].id == boardFaces[i].id){
+         app.stage.removeChild(children[j]);
+      }    
     }
   }
+}
 
   for (i = 0; i < 2; i++){ //Also removes cards
-    var id = cards[i].id;
-    for (j = 0; j < children.length; j++){
-      if (children[j].id == cards[i].id){
-        app.stage.removeChild(children[j]);
-      }
+    if (cards[i]){
+      var id = cards[i].id;
+      for (j = 0; j < children.length; j++){
+        if (children[j].id == cards[i].id){
+          app.stage.removeChild(children[j]);
+        }
+      }     
     }
   }
   flopFaces = [];
@@ -87,6 +91,9 @@ socket.on("your_turn", () => {
 	$("#chat").append("Your turn" + "<br/>");	
 });
 
+socket.on("player_won", (pot) => {
+  $("#chat").append("Your have won " + pot + "<br/>"); 
+})
 
 function sendBet(amount){
 	if (amount <= 0) {

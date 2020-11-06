@@ -28,6 +28,7 @@ function Player(id, name, chips, socket)
   this.chips = chips;
   this.cards = []; //Probably don't need an array for 2 cards we could do player.card1 & card2
   this.socket = socket;
+  this.fold = false;
 
   this.removeChips = (amount) => {
     if (this.chips - amount < 0){
@@ -108,6 +109,8 @@ function startRound()//Start of a round, give each player two cards, big blind a
   draws = 0;
   turn = 0;
   board = [];
+  table.pot = 0;
+  table.playersInPlay = players.length;
 
   createDeck();
 
@@ -115,6 +118,7 @@ function startRound()//Start of a round, give each player two cards, big blind a
 
   for (var i = 0;i < len; i++)
   {
+    players[i].fold = false;
     players[i].cards = [];//Reset cards after each round start
     for (var j = 0; j < 2; j++)
     {
